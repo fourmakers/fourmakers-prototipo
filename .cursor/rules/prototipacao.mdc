@@ -1,0 +1,14 @@
+---
+description: Regras de prototipação e contexto do projeto (ler PROTOTIPACAO.md)
+alwaysApply: true
+---
+
+# Prototipação Fourmakers
+
+Ao trabalhar neste repositório, **considere sempre o arquivo raiz PROTOTIPACAO.md**.
+
+- Ele define o hub de protótipos, rotas em `/prototipo/*`, registro em `src/prototipo/registry.ts` e regras de DS (só tokens, componentes do DS, etc.).
+- Para novas telas: criar em `src/prototipo/pages/` e registrar em `registry.ts`; o usuário só precisa dizer *o que a tela deve exibir*.
+- Design system e tokens: `src/index.css` e `tailwind.config.ts`.
+
+Se a demanda for de prototipação, leia PROTOTIPACAO.md antes de implementar.

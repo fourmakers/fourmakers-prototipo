@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+
+# Docs técnicos copiados para servir em /docs/*.md (npm run sync:prototipo-docs)
+public/docs/*.md
+
+# Build
+dist/
+dist-ssr/
+*.local
+
+# Vite
+.vite/
+
+# Logs and cache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.eslintcache
+*.tsbuildinfo
+
+# Editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.DS_Store
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Test coverage (Vitest)
+coverage/
+
+# Cursor — versionar rules + commands (+ README opcional)
+.cursor/*
+!.cursor/rules/
+!.cursor/commands/
+!.cursor/README.md
+
+# BMAD — artefactos gerados localmente
+_bmad-output/
+
+# Deploy / build temporários
+.turbo/
+
+# OS
+Thumbs.db
+
+# Logs genéricos
+*.log
