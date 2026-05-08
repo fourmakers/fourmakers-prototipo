@@ -1,23 +1,27 @@
-# Publica o build Vite (pasta dist/) no GitHub Pages.
-# No repositório: Settings → Pages → Source: GitHub Actions (não uses "Deploy from branch" com a raiz do repo).
+# Coloca o resultado de `vite build` (pasta dist/) no branch **gh-pages**.
+#
+# No GitHub: Settings → Pages → Build and deployment → **Deploy from a branch**
+#            Branch: **gh-pages**  |  Folder: **/ (root)**
+#
+# Se deixares **main** + **/ (root)**, o Pages serve o index.html de desenvolvimento
+# (com `<script src="/src/main.tsx">`) → 404 em produção.
 
 name: Deploy GitHub Pages
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: gh-pages-deploy
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,19 +49,14 @@ jobs:
       - name: Build (homologação + sync docs)
         run: npm run build:homolog
 
-      - name: Fallback SPA (rotas client-side no Pages)
-        run: cp dist/index.html dist/404.html
+      - name: Fallback SPA + .nojekyll
+        run: |
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Push dist → branch gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          force_orphan: true
