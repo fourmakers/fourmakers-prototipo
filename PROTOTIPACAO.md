@@ -65,6 +65,7 @@ Não é necessário editar o `Sidebar` manualmente para novos itens.
 - **Build + preview:** `npm run preview:hml` ou `npm run validate:hml` / `npm run validate:local` (preview em **http://localhost:8080/**).
 - **Cursor:** **`/PROTOTIPO_validacao_local`** — ver `.cursor/commands/PROTOTIPO_validacao_local.md`.
 - **Deploy GitHub + URL de preview:** **`/PROTOTIPO_deploy`** — lê credenciais em `~/Desktop/PROTOTIPO_FOURMAKERS_DEPLOY_CREDENTIALS.md` (template no Desktop); push só em **`main`** com commit seguro; actualiza metadata de deploy nesse ficheiro.
+- **GitHub Pages (site do repositório):** não publiques a **raiz** do repo (o `index.html` da raiz aponta para `/src/main.tsx` — só serve em dev). Usa o workflow **Deploy GitHub Pages** (`.github/workflows/deploy-github-pages.yml`): **Settings → Pages → Source: GitHub Actions**. O build usa `VITE_BASE_PATH` (`/` para `*.github.io`, ou `/<nome-do-repo>/` para project sites). Após deploy, abre `https://<user>.github.io/<repo>/` (não `/src/main.tsx`).
 - **Dev:** `npm run dev` (porta 8080 em `vite.config.ts`)
 
 ---

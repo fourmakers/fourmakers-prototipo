@@ -10,12 +10,19 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
+/** GitHub Pages em subpasta: `import.meta.env.BASE_URL` é `/repo/`; RR prefere basename sem barra final. */
+function routerBasename(): string | undefined {
+  const base = import.meta.env.BASE_URL;
+  if (base === "/" || base === "") return undefined;
+  return base.endsWith("/") ? base.slice(0, -1) : base;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={routerBasename()}>
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<PrototipoHomePage />} />
