@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { AgenteAutodescobertaPage } from "@/prototipo/pages/AgenteAutodescobertaPage";
 import { DashboardComercialQualidadeBasePage } from "@/prototipo/dashboard-comercial/DashboardComercialQualidadeBasePage";
 
 /**
@@ -27,6 +28,17 @@ export interface PrototipoRegistryEntry {
 }
 
 export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
+  {
+    id: "agente-autodescoberta",
+    path: "/prototipo/agente-autodescoberta",
+    menuLabel: "Agente de Autodescoberta",
+    cardTitle: "Agente de Autodescoberta",
+    cardDescription:
+      "Chat guiado em 9 etapas: acolhimento, profissão, valores (10 de 32), situações e devolução com competências e cargos (protótipo com respostas simuladas).",
+    routeSlug: "agente-autodescoberta",
+    documentationMarkdownFile: "FOURMAKERS_AGENTE_DOCUMENTACAO_TECNICA.md",
+    Component: AgenteAutodescobertaPage,
+  },
   {
     id: "dashboard-comercial-qualidade-base",
     path: "/prototipo/dashboard-comercial",
