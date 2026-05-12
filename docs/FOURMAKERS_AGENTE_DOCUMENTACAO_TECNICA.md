@@ -3,7 +3,7 @@
 Documentação **autocontida** para migração do fluxo **Conversa de autodescoberta** (9 etapas) e da experiência **pós-conversa** alinhada ao protótipo **Perfil de Atuação Humano + Agentes** (revisão da análise da IA, composição humano/agentes/híbrido, catálogo de agentes, carreiras potencializadas e vagas). O estado actual no repositório **prototipo-fourmakers** é **protótipo front** com mocks locais (sem chamadas reais à IA no browser).
 
 - **Criado em:** 12/05/2025 — Origem: documentação externa da conversa (Anthropic / artefacto).
-- **Última atualização:** 08/05/2026 — Hub `/prototipo/agente-autodescoberta`: mocks de chat, painel pós-conversa (confirmação Perfil de Atuação, composição com sliders, carreiras, vagas), documentação unificada para download na home.
+- **Última atualização:** 08/05/2026 — Acordeão em **Análise de carreiras**: cabeçalho com título, resumo (subtítulo), **% de aderência profissional** (potencializada + referência ao % actual) e chevron; ao expandir: skills, barras de aderência e agentes mapeados.
 
 ---
 
@@ -40,7 +40,7 @@ Documentação **autocontida** para migração do fluxo **Conversa de autodescob
 4. Continua com mensagens de texto até à **etapa 9**; o mock devolve texto limpo + tags parseadas.
 5. Aparece **`AutodescobertaResultadoExpandido`** abaixo do chat (largura `max-w-6xl`):
    - **Fase confirmação:** revisão tipo **passo 2 Perfil de Atuação** — segmentos categorizados, três colunas (Decisões, Rotinas, Entregáveis), confiança, checkboxes e feedback opcional; **Continuar** exige “representa bem” **ou** “faltou algo” + texto ≥ 12 caracteres.
-   - **Fase completa:** grelha **8+4** — competências e cargos da conversa | carrossel de **vagas**; depois **coluna única** com composição (barra + anel conic + sliders que mantêm soma 100%), aviso de alto risco humano, **switches** de agentes do catálogo mock, secção **Análise de carreiras** com três carreiras potencializadas.
+   - **Fase completa:** grelha **8+4** — competências e cargos da conversa | carrossel de **vagas**; depois **coluna única** com composição (barra + anel conic + sliders que mantêm soma 100%), aviso de alto risco humano, **switches** de agentes do catálogo mock, secção **Análise de carreiras** com **três linhas em largura total** (acordeão Radix **Collapsible**): cabeçalho clicável com **% de aderência profissional** (`aderenciaPotencializada`) e resumo; conteúdo expandido com skills, barras (actual vs. potencializada) e lista de agentes.
 
 ---
 
@@ -55,7 +55,7 @@ Documentação **autocontida** para migração do fluxo **Conversa de autodescob
 | Composição | `humano + agentes + hibrido === 100`; sliders com redistribuição proporcional. |
 | Agentes | `available` / `pilot` / `unavailable`; toggle desactivado para `unavailable`. |
 | Vagas | Carrossel Embla; dados `MOCK_VAGAS_AUTODESCOBERTA`. |
-| Carreiras | Três cards com aderência actual vs. potencializada e agentes mapeados. |
+| Carreiras | Três **cards acordeão** (`Collapsible`): header = título + resumo (`line-clamp-2`) + **% aderência profissional** (potencializada; linha “Atual X%”) + chevron; expandido = skills, barras de aderência, agentes (`MOCK_CARREIRAS_POTENCIALIZADAS`). |
 
 ---
 
@@ -68,9 +68,9 @@ Documentação **autocontida** para migração do fluxo **Conversa de autodescob
 
 ## §5. UX, UI e Design System
 
-- **Componentes:** `PageHeader`, `Card`, `Button`, `Badge`, `Textarea`, `Checkbox`, `Switch`, `Slider`, `Carousel`, `Tooltip` (Radix), ícones `lucide-react`.
+- **Componentes:** `PageHeader`, `Card`, `Button`, `Badge`, `Textarea`, `Checkbox`, `Switch`, `Slider`, `Carousel`, `Collapsible` (Radix), `Tooltip` (Radix), ícones `lucide-react`.
 - **Tokens:** `borderSoft`, `surfaceElevated`, `primarySoft`, `success`, `warning`, `info`, `primaryText`, `secondaryText`, etc. (sem cores hex soltas nas novas áreas).
-- **A11y:** `sr-only` no título do chat; `aria-label` no carrossel de vagas e nos switches de agentes; botões com texto explícito na confirmação.
+- **A11y:** `sr-only` no título do chat; `aria-label` no carrossel de vagas e nos switches de agentes; botões com texto explícito na confirmação; no acordeão de carreiras: `aria-expanded` no trigger, `id` / `aria-controls` entre trigger e painel de detalhes.
 - **Microcopy:** reforçar que sugestões são da IA e sujeitas a revisão (“A IA pode errar…”).
 
 ---
@@ -87,7 +87,7 @@ src/prototipo/agente-autodescoberta/
   autodescobertaMockChat.ts        → mensagens por turno
   autodescobertaAnalisePreviaMock.ts → análise prévia + catálogo agentes (mock)
   autodescobertaResultadoMocks.ts  → vagas + carreiras
-  AutodescobertaResultadoExpandido.tsx → UI pós-conversa (fases, grelha, composição, carreiras)
+  AutodescobertaResultadoExpandido.tsx → UI pós-conversa (fases, grelha, composição, carreiras em Collapsible)
 ```
 
 **Próximo passo para integração no app principal:** substituir mocks por hooks (`useAutodescobertaSessao`, `useAnalisePrevia`, `useComposicao`) chamando API com envelope padrão; manter parse de tags no backend (preferencial) ou duplicar validação no front apenas para UX.
@@ -110,6 +110,7 @@ src/prototipo/agente-autodescoberta/
 | Confirmação | `autodescoberta-confirmar-continuar` | Desabilitado até regra de checkbox/feedback. |
 | Slider composição | `autodescoberta-slider-humano` (etc.) | Sempre soma 100 após arrastar cada um. |
 | Switch agente | `autodescoberta-agente-{id}` | Indisponível não alterna. |
+| Carreira (acordeão) | `autodescoberta-carreira-{id}-trigger` / `autodescoberta-carreira-{id}-detalhes` | Cabeçalho alterna expandido; % profissional visível fechado; detalhes após clique. |
 
 ---
 
@@ -122,6 +123,7 @@ src/prototipo/agente-autodescoberta/
 | 3 | Posso saltar a confirmação da análise? | No protótipo não; em produto pode ser política de onboarding. |
 | 4 | A composição grava onde? | Ainda não grava; persistir via API sugerida na secção de integração. |
 | 5 | As vagas são reais? | Não; `MOCK_VAGAS_AUTODESCOBERTA` para layout de card. |
+| 6 | O que significa a % no cabeçalho da carreira? | Valor **potencializada** (com agentes IA); a linha **“Atual X%”** é a aderência ao perfil sem potencialização. Detalhes completos ao expandir. |
 
 ---
 

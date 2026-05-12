@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
-import { Briefcase, Heart, Info, Share2, Sparkles, Wrench, Zap } from "lucide-react";
+import { Briefcase, ChevronDown, Heart, Info, Share2, Sparkles, Wrench, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -145,61 +146,95 @@ function VagaCard({ vaga }: { vaga: VagaCardMock }) {
 }
 
 function CarreiraCard({ carreira }: { carreira: CarreiraPotencializadaMock }) {
+  const [open, setOpen] = useState(false);
+  const aderenciaProfissional = carreira.aderenciaPotencializada;
+
   return (
-    <Card className="border-borderSoft bg-surfaceElevated shadow-softToken">
-      <CardContent className="space-y-4 p-5">
-        <div className="flex items-start gap-2">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accentSoft text-accent">
-            <Sparkles className="size-4" aria-hidden />
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <Card className="overflow-hidden border-borderSoft bg-surfaceElevated shadow-softToken transition-shadow hover:shadow-cardHoverToken">
+        <CollapsibleTrigger asChild>
+          <button
+            type="button"
+            data-testid={`autodescoberta-carreira-${carreira.id}-trigger`}
+            className="flex w-full items-start gap-3 px-5 py-4 text-left outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            aria-expanded={open}
+            aria-controls={`carreira-detalhes-${carreira.id}`}
+            id={`carreira-trigger-${carreira.id}`}
+          >
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accentSoft text-accent">
+              <Sparkles className="size-4" aria-hidden />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h4 className="text-base font-semibold leading-snug text-primaryText">{carreira.titulo}</h4>
+              <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-secondaryText">{carreira.resumoAlinhamento}</p>
+            </div>
+            <div className="flex shrink-0 flex-col items-end gap-1 pl-2">
+              <span className="text-2xl font-bold tabular-nums leading-none text-primary">{aderenciaProfissional}%</span>
+              <span className="max-w-[7.5rem] text-right text-[11px] font-medium leading-tight text-secondaryText">
+                Aderência profissional
+              </span>
+              <span className="text-[10px] tabular-nums text-secondaryText">Atual {carreira.aderenciaPerfilAtual}%</span>
+            </div>
+            <ChevronDown
+              className={cn(
+                "mt-1 size-5 shrink-0 text-secondaryText transition-transform duration-200",
+                open && "rotate-180",
+              )}
+              aria-hidden
+            />
+          </button>
+        </CollapsibleTrigger>
+
+        <CollapsibleContent
+          id={`carreira-detalhes-${carreira.id}`}
+          data-testid={`autodescoberta-carreira-${carreira.id}-detalhes`}
+        >
+          <div className="border-t border-borderSoft bg-secondaryBackground/60 px-5 pb-5 pt-4">
+            <div>
+              <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-secondaryText">
+                skills em destaque nesta carreira
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {carreira.skillsDestaque.map((s) => (
+                  <Badge key={s} variant="secondary" className="font-normal">
+                    {s}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            <div className="mt-4 space-y-4 rounded-xl border border-borderSoft bg-surfaceElevated p-4">
+              <BarraPercentual label="Aderência ao perfil atual" value={carreira.aderenciaPerfilAtual} variant="atual" />
+              <BarraPercentual
+                label="Aderência potencializada (agentes IA)"
+                value={carreira.aderenciaPotencializada}
+                variant="potencializada"
+              />
+            </div>
+            <div className="mt-4">
+              <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-secondaryText">
+                agentes IA mapeados (contribuição relativa na potencialização)
+              </p>
+              <ul className="space-y-3">
+                {carreira.agentes.map((ag) => (
+                  <li
+                    key={ag.nome}
+                    className="rounded-lg border border-borderSoft bg-surfaceElevated p-3 text-sm leading-snug"
+                  >
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <span className="font-semibold text-primaryText">{ag.nome}</span>
+                      <span className="rounded-pillToken bg-primarySoft px-2 py-0.5 text-xs font-semibold text-primary">
+                        {ag.contribuicaoPotencializacao}% da potencialização
+                      </span>
+                    </div>
+                    <p className="mt-2 text-secondaryText">{ag.parecer}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <h4 className="text-base font-semibold text-primaryText">{carreira.titulo}</h4>
-            <p className="mt-1 text-sm leading-relaxed text-secondaryText">{carreira.resumoAlinhamento}</p>
-          </div>
-        </div>
-        <div>
-          <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-secondaryText">
-            skills em destaque nesta carreira
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {carreira.skillsDestaque.map((s) => (
-              <Badge key={s} variant="secondary" className="font-normal">
-                {s}
-              </Badge>
-            ))}
-          </div>
-        </div>
-        <div className="space-y-4 rounded-xl border border-borderSoft bg-secondaryBackground p-4">
-          <BarraPercentual label="Aderência ao perfil atual" value={carreira.aderenciaPerfilAtual} variant="atual" />
-          <BarraPercentual
-            label="Aderência potencializada (agentes IA)"
-            value={carreira.aderenciaPotencializada}
-            variant="potencializada"
-          />
-        </div>
-        <div>
-          <p className="mb-3 text-[11px] font-medium uppercase tracking-wider text-secondaryText">
-            agentes IA mapeados (contribuição relativa na potencialização)
-          </p>
-          <ul className="space-y-3">
-            {carreira.agentes.map((ag) => (
-              <li
-                key={ag.nome}
-                className="rounded-lg border border-borderSoft bg-surfaceElevated p-3 text-sm leading-snug"
-              >
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <span className="font-semibold text-primaryText">{ag.nome}</span>
-                  <span className="rounded-pillToken bg-primarySoft px-2 py-0.5 text-xs font-semibold text-primary">
-                    {ag.contribuicaoPotencializacao}% da potencialização
-                  </span>
-                </div>
-                <p className="mt-2 text-secondaryText">{ag.parecer}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </CardContent>
-    </Card>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
   );
 }
 
@@ -624,9 +659,9 @@ export function AutodescobertaResultadoExpandido({
               <div className="border-t border-borderSoft pt-8">
                 <h3 className="text-base font-semibold text-primaryText">Análise de carreiras</h3>
                 <p className="mt-1 text-sm text-secondaryText">
-                  Carreiras em que o seu perfil encaixa hoje e o efeito de potencialização com os agentes mapeados.
+                  Carreiras em largura total: cada linha mostra título, resumo e <strong className="font-medium text-primaryText">% de aderência profissional</strong> (potencializada com agentes). Toque para expandir e ver skills, barras de aderência e agentes mapeados.
                 </p>
-                <div className="mt-4 space-y-4">
+                <div className="mt-4 flex w-full flex-col gap-3">
                   {MOCK_CARREIRAS_POTENCIALIZADAS.map((c) => (
                     <CarreiraCard key={c.id} carreira={c} />
                   ))}
