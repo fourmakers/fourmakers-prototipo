@@ -10,6 +10,8 @@ function viteBase(): string {
   return withLeading.endsWith("/") ? withLeading : `${withLeading}/`;
 }
 
+const analyticsApiProxyTarget = process.env.VITE_ANALYTICS_API_BASE_URL?.replace(/\/$/, "");
+
 // https://vitejs.dev/config/
 export default defineConfig({
   base: viteBase(),
@@ -19,6 +21,15 @@ export default defineConfig({
     hmr: {
       overlay: false,
     },
+    proxy: analyticsApiProxyTarget
+      ? {
+          "/analytics": {
+            target: analyticsApiProxyTarget,
+            changeOrigin: true,
+            secure: true,
+          },
+        }
+      : undefined,
   },
   plugins: [react()],
   resolve: {

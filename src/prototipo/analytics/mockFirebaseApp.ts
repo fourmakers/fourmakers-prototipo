@@ -21,17 +21,18 @@ function serieEventos(dias: number, base: number): { data: string; valor: number
   return out;
 }
 
+/** Top eventos: prioridade eventos já no app Flutter; roadmap misturado no mock. */
 const TOP_EVENTOS_BASE = [
-  { eventName: "screen_viewed", feature: "core" },
-  { eventName: "home_opened", feature: "home" },
-  { eventName: "jornada_kanban_opened", feature: "jornada_comercial" },
-  { eventName: "agenda_list_opened", feature: "encontros_agendas" },
-  { eventName: "login_completed", feature: "auth" },
-  { eventName: "lead_created", feature: "crm_leads" },
-  { eventName: "acao_marked_as_done", feature: "jornada_comercial" },
-  { eventName: "ai_next_steps_created", feature: "ia" },
-  { eventName: "perfil360_opened", feature: "perfil360" },
-  { eventName: "notification_opened", feature: "notificacoes" },
+  { eventName: "screen_view", feature: "core" },
+  { eventName: "feature_tapped", feature: "core" },
+  { eventName: "app_open", feature: "core" },
+  { eventName: "login", feature: "auth" },
+  { eventName: "logout", feature: "auth" },
+  { eventName: "action_result", feature: "core" },
+  { eventName: "form_validation_failed", feature: "forms" },
+  { eventName: "friction_error", feature: "core" },
+  { eventName: "form_started", feature: "forms" },
+  { eventName: "form_submitted", feature: "forms" },
 ];
 
 const SCREENS = [
@@ -85,30 +86,30 @@ export function getMockFirebaseAppDashboard(
     })),
     funis: [
       {
+        id: "sessao",
+        titulo: "Sessão (app)",
+        etapas: [
+          { nome: "app_open", usuarios: Math.round(520 * f) },
+          { nome: "screen_view", usuarios: Math.round(498 * f), taxaConversaoPct: 95.8 },
+          { nome: "feature_tapped", usuarios: Math.round(410 * f), taxaConversaoPct: 82.3 },
+        ],
+      },
+      {
         id: "login",
         titulo: "Autenticação",
         etapas: [
-          { nome: "login_started", usuarios: Math.round(520 * f) },
-          { nome: "login_completed", usuarios: Math.round(489 * f), taxaConversaoPct: 94.0 },
-          { nome: "sso_microsoft_completed", usuarios: Math.round(312 * f), taxaConversaoPct: 63.8 },
+          { nome: "screen_view (login)", usuarios: Math.round(480 * f) },
+          { nome: "login", usuarios: Math.round(455 * f), taxaConversaoPct: 94.8 },
+          { nome: "action_result (sucesso)", usuarios: Math.round(430 * f), taxaConversaoPct: 94.5 },
         ],
       },
       {
-        id: "jornada",
-        titulo: "Jornada comercial",
+        id: "friccao",
+        titulo: "Fricção",
         etapas: [
-          { nome: "jornada_kanban_opened", usuarios: Math.round(380 * f) },
-          { nome: "jornada_card_opened", usuarios: Math.round(290 * f), taxaConversaoPct: 76.3 },
-          { nome: "acao_marked_as_done", usuarios: Math.round(142 * f), taxaConversaoPct: 48.9 },
-        ],
-      },
-      {
-        id: "crm",
-        titulo: "CRM",
-        etapas: [
-          { nome: "crm (screen)", usuarios: Math.round(210 * f) },
-          { nome: "lead_created", usuarios: Math.round(68 * f), taxaConversaoPct: 32.4 },
-          { nome: "lead_stage_changed", usuarios: Math.round(41 * f), taxaConversaoPct: 60.3 },
+          { nome: "form_validation_failed", usuarios: Math.round(124 * f) },
+          { nome: "friction_error", usuarios: Math.round(186 * f), taxaConversaoPct: 150 },
+          { nome: "action_result (falha)", usuarios: Math.round(42 * f), taxaConversaoPct: 22.6 },
         ],
       },
     ],
@@ -120,15 +121,14 @@ export function getMockFirebaseAppDashboard(
       { name: "feature", value: "jornada_comercial", usuarios: Math.round(mau * 0.55) },
     ],
     erros: [
-      { eventName: "api_error_shown", totalEvents: Math.round(186 * f), uniqueUsers: Math.round(94 * f), feature: "core" },
+      { eventName: "friction_error", totalEvents: Math.round(186 * f), uniqueUsers: Math.round(94 * f), feature: "core" },
       { eventName: "form_validation_failed", totalEvents: Math.round(124 * f), uniqueUsers: Math.round(78 * f), feature: "forms" },
-      { eventName: "upload_failed", totalEvents: Math.round(42 * f), uniqueUsers: Math.round(31 * f), feature: "crm_leads" },
-      { eventName: "ai_next_steps_failed", totalEvents: Math.round(18 * f), uniqueUsers: Math.round(14 * f), feature: "ia" },
+      { eventName: "action_result", totalEvents: Math.round(88 * f), uniqueUsers: Math.round(52 * f), feature: "core" },
     ],
     integracao: {
-      bigQueryExportAtivo: true,
-      debugViewAtivo: env === "hml",
-      ultimaSyncBigQuery: "2026-05-24T06:00:00Z",
+      bigQueryExportAtivo: false,
+      debugViewAtivo: env === "hml" || env === "dev",
+      ultimaSyncBigQuery: "Aguardando Analytics API / BigQuery Export (cenário dev)",
     },
   };
 }

@@ -2,8 +2,9 @@
 
 Documentação para o protótipo **Métricas APP** no hub (`/prototipo/analytics/metricas-app`). O UI actual usa **mocks**; este guia é o passo a passo para o dev substituir mocks por **dados reais** do Firebase Analytics/GA4 (via BigQuery ou API) e do Contentsquare.
 
+- **Handoff para a equipa API (o que falta + o que informar):** [`ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md`](./ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md)
 - **Criado em:** 08/05/2026
-- **Última atualização:** 08/05/2026 — Guia de integração Firebase + Contentsquare; UI mantém mocks até ligar backend.
+- **Última atualização:** 08/05/2026 — Cliente Analytics API (`GET /analytics/app`), React Query, normalizers hub; mocks por defeito.
 
 ---
 
@@ -14,9 +15,11 @@ Documentação para o protótipo **Métricas APP** no hub (`/prototipo/analytics
 | **Rota** | `/prototipo/analytics/metricas-app` |
 | **Menu** | Grupo **Analytics** → Métricas APP |
 | **Fontes na UI** | Tabs: **App — Firebase** \| **App — Contentsquare** |
-| **Dados hoje** | **Simulados** — `getMockFirebaseAppDashboard`, `getMockContentsquareAppDashboard` |
-| **Ficheiros mock** | `src/prototipo/analytics/mockFirebaseApp.ts`, `mockContentsquareApp.ts` |
-| **Tipos/DTO** | `src/prototipo/analytics/types.ts` |
+| **Dados hoje** | **Simulados por defeito**; com API: `src/prototipo/analytics/api/analyticsApiClient.ts` |
+| **Ficheiros mock** | `mockFirebaseApp.ts`, `mockContentsquareApp.ts` (fallback / dev offline) |
+| **Cliente API** | `api/analyticsApiClient.ts`, `api/analyticsQueries.ts`, `api/analyticsNormalizers.ts` |
+| **Tipos/DTO** | `types.ts`, `api/analyticsApiTypes.ts` |
+| **Hub (referência dev)** | `fourmakers_analytics_hub_instrucoes.md`, `fourmakers_analytics_hub_prompts.md` |
 | **Docs de instrumentação (app Flutter)** | Ver secção §1 (export original FourMakers) |
 
 **Regra:** nunca expor chaves Firebase, service accounts BigQuery nem tokens Contentsquare no browser. Toda agregação sensível corre no **backend** (.NET 8 ou serviço analytics dedicado).
@@ -66,12 +69,18 @@ FourMakers Flutter App
 | Firebase | BigQuery `analytics_<PROPERTY_ID>.events_*` ou Reporting API via backend | §3 |
 | Contentsquare | API REST Contentsquare ou pipeline ETL acordado | §5 |
 
-### Fase 3 — Front do hub (substituir mocks)
+### Fase 3 — Front do hub (implementado no protótipo)
 
-1. Criar `src/prototipo/analytics/api/` com `fetchFirebaseAppDashboard`, `fetchContentsquareAppDashboard`.
-2. Em `AnalyticsMetricasAppPage.tsx`, trocar `useMemo(getMock…)` por `useQuery` (TanStack Query já está no projeto).
-3. Manter mocks atrás de flag `VITE_ANALYTICS_USE_MOCK=true` para desenvolvimento offline.
-4. Exibir erro amigável se API falhar; não fazer fallback silencioso para números inventados em produção.
+1. `src/prototipo/analytics/api/` — cliente, queries, normalizers, config.
+2. `AnalyticsMetricasAppPage.tsx` — TanStack Query + estados loading/erro/retry.
+3. Variáveis `.env` (ver `.env.example`):
+   - `VITE_ANALYTICS_API_BASE_URL` — base da Analytics API
+   - `VITE_ANALYTICS_USE_MOCK=true` — só mocks (default sem URL)
+   - `VITE_ANALYTICS_USE_MOCK=false` — chama API
+   - `VITE_ANALYTICS_FALLBACK_MOCK=true` — se API falhar, usa mocks
+   - `VITE_ANALYTICS_API_TOKEN` — Bearer (local/CI, nunca no repo)
+4. Endpoints consumidos (ordem de tentativa): `GET {base}/analytics/app?from&to&platform=app&environment&source=firebase|contentsquare&device_platform=…` e legado `GET {base}/api/analytics/app/{source}/dashboard`.
+5. Em produção sem fallback: erro visível (não inventar números silenciosamente).
 
 ### Fase 4 — Validação
 
@@ -159,7 +168,13 @@ Envelope padrão em todas as respostas:
 }
 ```
 
-### 4.1 `GET /api/analytics/app/firebase/dashboard`
+### 4.1 `GET /analytics/app` (hub — preferencial)
+
+**Query:** `from`, `to`, `platform=app`, `environment`, `source` (`firebase` | `contentsquare`), `device_platform` (`android` | `ios`, omitir se ambos), opcionais `organization_id`, `user_role`, `feature`, `app_version`, `client_id`.
+
+**Response 200 (`retorno`):** `AnalyticsAppRetorno` — `firebase` e/ou `contentsquare` com o mesmo shape dos dashboards UI, ou DTO unificado (normalizer converte).
+
+### 4.2 `GET /api/analytics/app/firebase/dashboard` (legado protótipo)
 
 **Query:** `dataInicio`, `dataFim` (ISO date), `environment` (`hml`|`prod`), `platform` (`all`|`android`|`ios`)
 
@@ -188,7 +203,7 @@ Envelope padrão em todas as respostas:
 }
 ```
 
-### 4.2 `GET /api/analytics/app/contentsquare/dashboard`
+### 4.3 `GET /api/analytics/app/contentsquare/dashboard` (legado)
 
 Mesmos query params; `retorno` compatível com `ContentsquareAppDashboardData`.
 
@@ -229,13 +244,13 @@ O app deve usar **SDK directo** como principal; GTM é complementar. O dashboard
 ## §6. Alterações no código do hub (checklist)
 
 ```txt
-[ ] Criar src/prototipo/analytics/api/analyticsAppApi.ts
-[ ] Variáveis .env: VITE_ANALYTICS_API_BASE_URL (sem secrets)
-[ ] Hook useFirebaseAppDashboard / useContentsquareAppDashboard (React Query)
-[ ] AnalyticsMetricasAppPage: loading/error states; remover mock quando VITE_ANALYTICS_USE_MOCK !== 'true'
-[ ] Badge "Dados em tempo real" vs "Dados simulados" conforme flag/API
-[ ] Testes manuais com filtros data/ambiente/plataforma
-[ ] (Opcional) E2E nos data-testid analytics-*
+[x] analyticsApiClient.ts + analyticsQueries.ts + analyticsNormalizers.ts
+[x] Variáveis .env (.env.example)
+[x] AnalyticsMetricasAppPage com React Query + erro/retry
+[x] Badge conforme modo: mock | api | api-fallback-mock
+[ ] Backend Analytics API em produção (BigQuery + Contentsquare providers)
+[ ] VITE_ANALYTICS_USE_MOCK=false em ambiente com API
+[ ] Testes E2E opcionais nos data-testid analytics-*
 ```
 
 **Substituição directa dos mocks:**

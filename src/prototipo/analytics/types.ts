@@ -1,4 +1,5 @@
-export type AnalyticsEnvironment = "hml" | "prod";
+/** App envia hml/prod; hub API aceita também dev (doc cenário). */
+export type AnalyticsEnvironment = "dev" | "hml" | "prod";
 export type AnalyticsPlatform = "all" | "android" | "ios";
 
 export interface AnalyticsDateRange {

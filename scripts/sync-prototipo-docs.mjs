@@ -1,6 +1,7 @@
 /**
- * Copia ficheiros `docs/*_DOCUMENTACAO_TECNICA.md` para `public/docs/`
- * para o Vite servir em `/docs/...` (download a partir da home).
+ * Copia documentação de protótipo de `docs/` para `public/docs/`:
+ * - `*_DOCUMENTACAO_TECNICA.md`
+ * - `ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md` (handoff API)
  */
 import fs from "fs";
 import path from "path";
@@ -19,16 +20,22 @@ if (!fs.existsSync(srcDir)) {
 fs.mkdirSync(destDir, { recursive: true });
 
 /** Remove cópias antigas — evita servir `.md` duplicados ou fundidos noutro ficheiro. */
-for (const f of fs.readdirSync(destDir)) {
-  if (f.endsWith("_DOCUMENTACAO_TECNICA.md") && !f.startsWith("_")) {
-    fs.unlinkSync(path.join(destDir, f));
-  }
+const SYNC_PATTERNS = [
+  (f) => f.endsWith("_DOCUMENTACAO_TECNICA.md") && !f.startsWith("_"),
+  (f) => f === "ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md",
+  (f) => f === "ANALYTICS_INTEGRACAO_STATUS_REPORT.md",
+  (f) => f === "ANALYTICS_HUB_CENARIO_ESTADO_E_PENDENCIAS.md",
+];
+
+function shouldSync(filename) {
+  return SYNC_PATTERNS.some((match) => match(filename));
 }
 
-/** Exclui modelos internos (ex.: `_MODELO_...`) — só features em maiúsculas. */
-const files = fs.readdirSync(srcDir).filter(
-  (f) => f.endsWith("_DOCUMENTACAO_TECNICA.md") && !f.startsWith("_"),
-);
+for (const f of fs.readdirSync(destDir)) {
+  if (shouldSync(f)) fs.unlinkSync(path.join(destDir, f));
+}
+
+const files = fs.readdirSync(srcDir).filter(shouldSync);
 
 for (const f of files) {
   fs.copyFileSync(path.join(srcDir, f), path.join(destDir, f));
