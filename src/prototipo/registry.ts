@@ -1,6 +1,15 @@
 import type { ComponentType } from "react";
 import { AgenteAutodescobertaPage } from "@/prototipo/pages/AgenteAutodescobertaPage";
 import { DashboardComercialQualidadeBasePage } from "@/prototipo/dashboard-comercial/DashboardComercialQualidadeBasePage";
+import { AnalyticsMetricasAppPage } from "@/prototipo/pages/AnalyticsMetricasAppPage";
+
+/** Grupo no menu lateral e na home */
+export type PrototipoMenuGroup = "prototipos" | "analytics";
+
+export const MENU_GROUP_LABELS: Record<PrototipoMenuGroup, string> = {
+  prototipos: "Protótipos",
+  analytics: "Analytics",
+};
 
 /**
  * Registro de protótipos sob `/prototipo/*`.
@@ -11,7 +20,9 @@ export interface PrototipoRegistryEntry {
   id: string;
   /** Caminho completo, ex.: `/prototipo/minha-feature` */
   path: string;
-  /** Rótulo no menu lateral (grupo Protótipos) */
+  /** Grupo no menu (Protótipos ou Analytics) */
+  menuGroup: PrototipoMenuGroup;
+  /** Rótulo no menu lateral */
   menuLabel: string;
   /** Título no card da página inicial */
   cardTitle: string;
@@ -31,6 +42,7 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   {
     id: "agente-autodescoberta",
     path: "/prototipo/agente-autodescoberta",
+    menuGroup: "prototipos",
     menuLabel: "Agente de Autodescoberta",
     cardTitle: "Agente de Autodescoberta",
     cardDescription:
@@ -42,6 +54,7 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   {
     id: "dashboard-comercial-qualidade-base",
     path: "/prototipo/dashboard-comercial",
+    menuGroup: "prototipos",
     menuLabel: "Dashboard comercial",
     cardTitle: "Dashboard comercial",
     cardDescription: "Qualidade da base — KPIs, recência de visitas (C-Level/Decisor) e painéis expansíveis.",
@@ -49,4 +62,20 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
     documentationMarkdownFile: "DASHBOARD_COMERCIAL_DOCUMENTACAO_TECNICA.md",
     Component: DashboardComercialQualidadeBasePage,
   },
+  {
+    id: "analytics-metricas-app",
+    path: "/prototipo/analytics/metricas-app",
+    menuGroup: "analytics",
+    menuLabel: "Métricas APP",
+    cardTitle: "Métricas APP",
+    cardDescription:
+      "Dashboards App — Firebase Analytics (GA4/BigQuery) e Contentsquare (replay, fricção, jornadas) com seletor e filtros; base para comparativo Web.",
+    routeSlug: "analytics/metricas-app",
+    documentationMarkdownFile: "ANALYTICS_METRICAS_APP_DOCUMENTACAO_TECNICA.md",
+    Component: AnalyticsMetricasAppPage,
+  },
 ];
+
+export function registryByMenuGroup(group: PrototipoMenuGroup): PrototipoRegistryEntry[] {
+  return PROTOTIPO_REGISTRY.filter((e) => e.menuGroup === group);
+}

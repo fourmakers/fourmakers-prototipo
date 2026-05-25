@@ -1,12 +1,31 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Layers, FileCode2, ChevronLeft, ChevronRight, ChevronDown, LogOut } from "lucide-react";
+import {
+  Home,
+  Layers,
+  BarChart3,
+  FileCode2,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  LogOut,
+} from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { PROTOTIPO_REGISTRY } from "@/prototipo/registry";
+import {
+  MENU_GROUP_LABELS,
+  PROTOTIPO_REGISTRY,
+  registryByMenuGroup,
+  type PrototipoMenuGroup,
+} from "@/prototipo/registry";
 
 const SIDEBAR_WIDTH = "260px";
 const SIDEBAR_COLLAPSED_WIDTH = "72px";
 const HEADER_HEIGHT = "72px";
+
+const GROUP_ICONS: Record<PrototipoMenuGroup, typeof Layers> = {
+  prototipos: Layers,
+  analytics: BarChart3,
+};
 
 function SubNavLink({
   label,
@@ -53,6 +72,99 @@ function SubNavLink({
   );
 }
 
+function NavGroupSection({
+  group,
+  collapsed,
+  pathname,
+  expanded,
+  onToggleExpanded,
+  onNavigate,
+  onExpandFromCollapsed,
+}: {
+  group: PrototipoMenuGroup;
+  collapsed: boolean;
+  pathname: string;
+  expanded: boolean;
+  onToggleExpanded: () => void;
+  onNavigate: (path: string) => void;
+  onExpandFromCollapsed: () => void;
+}) {
+  const entries = registryByMenuGroup(group);
+  const Icon = GROUP_ICONS[group];
+  const label = MENU_GROUP_LABELS[group];
+  const isChildActive = entries.some((e) => e.path === pathname);
+
+  const parentButton = (
+    <button
+      type="button"
+      onClick={() => {
+        if (collapsed) onExpandFromCollapsed();
+        else onToggleExpanded();
+      }}
+      aria-expanded={expanded}
+      className={[
+        "flex items-center gap-2 w-full min-w-0 box-border rounded-pillToken text-[0.875rem] font-semibold transition-all duration-200",
+        collapsed ? "justify-center py-3 px-3" : "justify-start py-3 pl-3 pr-2",
+        "text-secondaryText hover:bg-btnGhostHover hover:text-primary",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      ].join(" ")}
+    >
+      <span className="flex shrink-0 w-6 h-6 items-center justify-center [&_svg]:size-5">
+        <Icon className="size-5" aria-hidden />
+      </span>
+      {!collapsed && (
+        <>
+          <span className="truncate flex-1 text-left">{label}</span>
+          <span className="shrink-0 flex items-center">
+            {expanded ? <ChevronDown className="size-4" aria-hidden /> : <ChevronRight className="size-4" aria-hidden />}
+          </span>
+        </>
+      )}
+    </button>
+  );
+
+  return (
+    <div className="flex flex-col gap-2">
+      {collapsed ? (
+        <Tooltip delayDuration={300}>
+          <TooltipTrigger asChild>{parentButton}</TooltipTrigger>
+          <TooltipContent side="right" className="font-medium">
+            {label}
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        parentButton
+      )}
+      {!collapsed && expanded && (
+        <div className="flex flex-col gap-1 pl-2 ml-1 border-l-2 border-border mt-1 mb-2">
+          {entries.map((entry) => (
+            <SubNavLink
+              key={entry.id}
+              label={entry.menuLabel}
+              collapsed={collapsed}
+              isActive={pathname === entry.path}
+              onSelect={() => onNavigate(entry.path)}
+            />
+          ))}
+        </div>
+      )}
+      {collapsed && isChildActive && (
+        <div className="flex flex-col gap-1">
+          {entries.map((entry) => (
+            <SubNavLink
+              key={entry.id}
+              label={entry.menuLabel}
+              collapsed={collapsed}
+              isActive={pathname === entry.path}
+              onSelect={() => onNavigate(entry.path)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface SidebarProps {
   collapsed: boolean;
   onClose: () => void;
@@ -65,12 +177,16 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
   const navigate = useNavigate();
   const pathname = location.pathname;
 
-  const isPrototipoChildActive = PROTOTIPO_REGISTRY.some((e) => e.path === pathname);
+  const isHubChildActive = PROTOTIPO_REGISTRY.some((e) => e.path === pathname);
   const [prototiposExpanded, setPrototiposExpanded] = useState(() => pathname.startsWith("/prototipo"));
+  const [analyticsExpanded, setAnalyticsExpanded] = useState(() =>
+    registryByMenuGroup("analytics").some((e) => e.path === pathname),
+  );
 
   useEffect(() => {
-    if (isPrototipoChildActive) setPrototiposExpanded(true);
-  }, [isPrototipoChildActive]);
+    if (isHubChildActive) setPrototiposExpanded(true);
+    if (registryByMenuGroup("analytics").some((e) => e.path === pathname)) setAnalyticsExpanded(true);
+  }, [pathname, isHubChildActive]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 768);
@@ -88,13 +204,9 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
     console.log("Sair (prototipo)");
   };
 
-  const handlePrototiposParent = () => {
-    if (collapsed) {
-      onToggleCollapse?.();
-      setTimeout(() => setPrototiposExpanded(true), 150);
-      return;
-    }
-    setPrototiposExpanded((p) => !p);
+  const expandGroupFromCollapsed = (setExpanded: (v: boolean) => void) => {
+    onToggleCollapse?.();
+    setTimeout(() => setExpanded(true), 150);
   };
 
   const inicioActive = pathname === "/";
@@ -116,32 +228,6 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
         <Home className="size-5" aria-hidden />
       </span>
       {!collapsed && <span className="truncate">Início</span>}
-    </button>
-  );
-
-  const parentPrototipos = (
-    <button
-      type="button"
-      onClick={handlePrototiposParent}
-      aria-expanded={prototiposExpanded}
-      className={[
-        "flex items-center gap-2 w-full min-w-0 box-border rounded-pillToken text-[0.875rem] font-semibold transition-all duration-200",
-        collapsed ? "justify-center py-3 px-3" : "justify-start py-3 pl-3 pr-2",
-        "text-secondaryText hover:bg-btnGhostHover hover:text-primary",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-      ].join(" ")}
-    >
-      <span className="flex shrink-0 w-6 h-6 items-center justify-center [&_svg]:size-5">
-        <Layers className="size-5" aria-hidden />
-      </span>
-      {!collapsed && (
-        <>
-          <span className="truncate flex-1 text-left">Protótipos</span>
-          <span className="shrink-0 flex items-center">
-            {prototiposExpanded ? <ChevronDown className="size-4" aria-hidden /> : <ChevronRight className="size-4" aria-hidden />}
-          </span>
-        </>
-      )}
     </button>
   );
 
@@ -176,44 +262,25 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
             inicioButton
           )}
 
-          <div className="flex flex-col gap-2">
-            {collapsed ? (
-              <Tooltip delayDuration={300}>
-                <TooltipTrigger asChild>{parentPrototipos}</TooltipTrigger>
-                <TooltipContent side="right" className="font-medium">
-                  Protótipos
-                </TooltipContent>
-              </Tooltip>
-            ) : (
-              parentPrototipos
-            )}
-            {!collapsed && prototiposExpanded && (
-              <div className="flex flex-col gap-1 pl-2 ml-1 border-l-2 border-border mt-1 mb-2">
-                {PROTOTIPO_REGISTRY.map((entry) => (
-                  <SubNavLink
-                    key={entry.id}
-                    label={entry.menuLabel}
-                    collapsed={collapsed}
-                    isActive={pathname === entry.path}
-                    onSelect={() => go(entry.path)}
-                  />
-                ))}
-              </div>
-            )}
-            {collapsed && isPrototipoChildActive && (
-              <div className="flex flex-col gap-1">
-                {PROTOTIPO_REGISTRY.map((entry) => (
-                  <SubNavLink
-                    key={entry.id}
-                    label={entry.menuLabel}
-                    collapsed={collapsed}
-                    isActive={pathname === entry.path}
-                    onSelect={() => go(entry.path)}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          <NavGroupSection
+            group="prototipos"
+            collapsed={collapsed}
+            pathname={pathname}
+            expanded={prototiposExpanded}
+            onToggleExpanded={() => setPrototiposExpanded((p) => !p)}
+            onNavigate={go}
+            onExpandFromCollapsed={() => expandGroupFromCollapsed(setPrototiposExpanded)}
+          />
+
+          <NavGroupSection
+            group="analytics"
+            collapsed={collapsed}
+            pathname={pathname}
+            expanded={analyticsExpanded}
+            onToggleExpanded={() => setAnalyticsExpanded((p) => !p)}
+            onNavigate={go}
+            onExpandFromCollapsed={() => expandGroupFromCollapsed(setAnalyticsExpanded)}
+          />
         </nav>
 
         <div

@@ -1,21 +1,22 @@
 import { Link } from "react-router-dom";
-import { Download, Folder } from "lucide-react";
-import { PROTOTIPO_REGISTRY } from "@/prototipo/registry";
+import { BarChart3, Download, Folder, Layers } from "lucide-react";
+import { MENU_GROUP_LABELS, registryByMenuGroup, type PrototipoMenuGroup, type PrototipoRegistryEntry } from "@/prototipo/registry";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { downloadTechnicalDoc } from "@/prototipo/downloadTechnicalDoc";
 
-export function PrototipoHomePage() {
-  return (
-    <div className="space-y-8">
-      <PageHeader
-        title="Protótipos"
-        description="Acesse as features em construção pelo menu Protótipos ou pelos cards abaixo. Use o ícone de download para obter a documentação técnica em Markdown."
-      />
+const GROUP_ORDER: PrototipoMenuGroup[] = ["prototipos", "analytics"];
 
-      <div className="grid max-w-4xl gap-4 sm:grid-cols-2">
-        {PROTOTIPO_REGISTRY.map((entry) => (
+const GROUP_ICONS: Record<PrototipoMenuGroup, typeof Layers> = {
+  prototipos: Layers,
+  analytics: BarChart3,
+};
+
+function RegistryCardGrid({ entries }: { entries: PrototipoRegistryEntry[] }) {
+  return (
+    <div className="grid max-w-4xl gap-4 sm:grid-cols-2">
+      {entries.map((entry) => (
           <div
             key={entry.id}
             className={cn(
@@ -56,7 +57,34 @@ export function PrototipoHomePage() {
             </Link>
           </div>
         ))}
-      </div>
+    </div>
+  );
+}
+
+export function PrototipoHomePage() {
+  return (
+    <div className="space-y-10">
+      <PageHeader
+        title="Hub Fourmakers"
+        description="Protótipos de interface e dashboards de analytics. Use o menu lateral ou os cards por secção."
+      />
+
+      {GROUP_ORDER.map((group) => {
+        const entries = registryByMenuGroup(group);
+        if (entries.length === 0) return null;
+        const Icon = GROUP_ICONS[group];
+        return (
+          <section key={group} className="space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="flex h-9 w-9 items-center justify-center rounded-md border border-borderSoft bg-primarySoft text-primary">
+                <Icon className="size-4" aria-hidden />
+              </span>
+              <h2 className="text-lg font-bold text-primaryText">{MENU_GROUP_LABELS[group]}</h2>
+            </div>
+            <RegistryCardGrid entries={entries} />
+          </section>
+        );
+      })}
     </div>
   );
 }
