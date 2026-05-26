@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  ANALYTICS_API_LOCAL_DEV,
   APP_FIREBASE_EVENTS_INSTRUMENTED,
   FIREBASE_CONSOLE_LINKS,
   HUB_FASE_A_BLOCKERS,
@@ -24,17 +25,27 @@ export function AnalyticsHubStatusCard() {
           <Badge variant="outline" className="font-normal">
             App coleta ~70%
           </Badge>
-          <Badge variant="secondary" className="font-normal">
-            API 0%
+          <Badge variant={usingMock ? "secondary" : "default"} className="font-normal">
+            {usingMock ? "API: mock / não ligada" : "API: ligada"}
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         <p className="text-secondaryText">
-          Projeto <span className="font-mono text-primaryText">{meta.projectId}</span> — eventos no app:{" "}
-          <span className="font-mono text-xs">{APP_FIREBASE_EVENTS_INSTRUMENTED.join(", ")}</span>. Métricas
-          agregadas no hub dependem da <strong className="font-medium text-primaryText">Analytics API</strong> (Fase
-          A).
+          Projeto <span className="font-mono text-primaryText">{meta.projectId}</span> · GA4 Property{" "}
+          <span className="font-mono text-primaryText">{meta.ga4PropertyId}</span> · Stream Android{" "}
+          <span className="font-mono text-xs">{meta.ga4AndroidStreamId}</span>
+          {" "}
+          · Measurement <span className="font-mono text-xs">{meta.ga4MeasurementId}</span>
+        </p>
+        <p className="text-secondaryText">
+          BQ <span className="font-mono text-xs">{meta.bigQueryDataset}</span> · Filtro hub: param{" "}
+          <span className="font-mono text-xs">{meta.environmentParamName}</span> (dev/hml/prod no app)
+        </p>
+        <p className="text-secondaryText">
+          Eventos no app:{" "}
+          <span className="font-mono text-xs">{APP_FIREBASE_EVENTS_INSTRUMENTED.join(", ")}</span>. Dashboard com{" "}
+          <strong className="font-medium text-primaryText">borda warning</strong> = mock; sem borda = Analytics API.
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -79,7 +90,8 @@ export function AnalyticsHubStatusCard() {
         </div>
 
         <p className="text-xs text-secondaryText">
-          Doc: <code className="rounded bg-surfaceElevated px-1">docs/ANALYTICS_HUB_CENARIO_ESTADO_E_PENDENCIAS.md</code>
+          API local: <code className="rounded bg-surfaceElevated px-1">{ANALYTICS_API_LOCAL_DEV.devCommand}</code> ·{" "}
+          <code className="rounded bg-surfaceElevated px-1">{ANALYTICS_API_LOCAL_DEV.readme}</code>
         </p>
       </CardContent>
     </Card>

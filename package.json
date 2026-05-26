@@ -17,6 +17,8 @@
     "preview:hml": "npm run build:hml && npm run preview:8080",
     "validate:hml": "npm run build:hml && npm run preview:8080",
     "validate:local": "npm run build:hml && npm run preview:8080",
+    "analytics-api:dev": "npm --prefix services/analytics-api run dev",
+    "analytics-api:install": "npm --prefix services/analytics-api install",
     "test": "vitest run",
     "test:watch": "vitest",
     "bmad:info": "node -e \"console.log('BMAD: config em _bmad/ · skills em .agents/skills/ · saída em _bmad-output/ · pacote: bmad-builder')\""

@@ -1,8 +1,8 @@
 # Relatório — Integração Analytics (dados reais)
 
-**Data:** 08/05/2026  
-**Pedido:** integrar Métricas APP com informações do `firebase_options.dart` (projeto `fourmakers-app`).  
-**Resultado:** **não foi possível obter métricas agregadas reais** apenas com esse ficheiro. O protótipo continua em **mock** ou via **Analytics API FourMakers** quando existir.
+**Data:** 25/05/2026 (actualizado)  
+**Pedido:** integrar Métricas APP com Firebase/GA4 via Analytics API.  
+**Resultado:** BFF em `services/analytics-api` (GA4 Data API + BigQuery + Contentsquare). Dados reais GA4 após deploy + `GA4_PROPERTY_ID`. Local: `npm run analytics-api:dev` com `DEMO_MODE=true`.
 
 ---
 
@@ -47,10 +47,11 @@ O front do protótipo **já está preparado** para a via **A** (`GET /analytics/
 | Componente | Estado |
 |------------|--------|
 | UI Métricas APP + filtros | OK |
-| Cliente `analyticsApiClient.ts` | OK |
+| Cliente `analyticsApiClient.ts` (só BFF) | OK — ver `ANALYTICS_FRONTEND_BFF_CONFIG.md` |
 | Metadados Firebase (`firebaseProjectMeta.ts`) | OK — projectId via env |
-| Leitura BigQuery / GA4 Data API no browser | **Não implementável** com dados actuais |
-| Dados reais no dashboard | **Bloqueado** — pendências §4 |
+| Leitura BigQuery / GA4 Data API no browser | **Não implementável** — usar BFF |
+| BFF local (`npm run analytics-api:dev` + DEMO_MODE) | **OK** — proxy Vite `/analytics` |
+| Dados reais GA4 no dashboard | **Bloqueado** até `GA4_PROPERTY_ID` + deploy |
 
 ---
 
@@ -61,7 +62,7 @@ O front do protótipo **já está preparado** para a via **A** (`GET /analytics/
 | # | Item | Quem | Exemplo / formato |
 |---|------|------|-------------------|
 | 1 | **URL Analytics API HML** | Backend/DevOps | `https://….run.app` → `VITE_ANALYTICS_API_BASE_URL` |
-| 2 | **GET /analytics/app** funcional | Backend | `source=firebase` e `source=contentsquare`, envelope Fourmakers |
+| 2 | **GET /analytics/app** deploy HML | DevOps | Implementado em `services/analytics-api` — falta Cloud Run + env |
 | 3 | **GA4 Property ID** (numérico) | Data/Analytics | ex. `123456789` — **não** é o `projectId` |
 | 4 | **BigQuery Export** activo | Data | Dataset `analytics_<PROPERTY_ID>.events_*` no project GCP ligado |
 | 5 | **Auth** documentada | Backend | Bearer JWT ou SSO; token de teste HML por canal seguro |

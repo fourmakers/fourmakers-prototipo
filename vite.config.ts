@@ -10,7 +10,27 @@ function viteBase(): string {
   return withLeading.endsWith("/") ? withLeading : `${withLeading}/`;
 }
 
-const analyticsApiProxyTarget = process.env.VITE_ANALYTICS_API_BASE_URL?.replace(/\/$/, "");
+/** Proxy local para services/analytics-api (porta 3001). */
+const analyticsApiProxyTarget =
+  process.env.ANALYTICS_API_PROXY_TARGET?.replace(/\/$/, "") ||
+  process.env.VITE_ANALYTICS_API_BASE_URL?.replace(/\/$/, "") ||
+  "http://localhost:3001";
+
+const analyticsProxy =
+  process.env.VITE_ANALYTICS_PROXY_DISABLED !== "true"
+    ? {
+        "/analytics": {
+          target: analyticsApiProxyTarget,
+          changeOrigin: true,
+          secure: false,
+        },
+        "/api/analytics": {
+          target: analyticsApiProxyTarget,
+          changeOrigin: true,
+          secure: false,
+        },
+      }
+    : undefined;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -21,15 +41,7 @@ export default defineConfig({
     hmr: {
       overlay: false,
     },
-    proxy: analyticsApiProxyTarget
-      ? {
-          "/analytics": {
-            target: analyticsApiProxyTarget,
-            changeOrigin: true,
-            secure: true,
-          },
-        }
-      : undefined,
+    proxy: analyticsProxy,
   },
   plugins: [react()],
   resolve: {

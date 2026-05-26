@@ -25,6 +25,9 @@ const SYNC_PATTERNS = [
   (f) => f === "ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md",
   (f) => f === "ANALYTICS_INTEGRACAO_STATUS_REPORT.md",
   (f) => f === "ANALYTICS_HUB_CENARIO_ESTADO_E_PENDENCIAS.md",
+  (f) => f === "ANALYTICS_API_SETUP_GCP.md",
+  (f) => f === "ANALYTICS_API_CONTRATO_BACKEND.md",
+  (f) => f === "ANALYTICS_FRONTEND_BFF_CONFIG.md",
 ];
 
 function shouldSync(filename) {

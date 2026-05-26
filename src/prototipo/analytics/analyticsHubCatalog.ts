@@ -64,9 +64,17 @@ export const ANALYTICS_API_ENDPOINTS = {
 } as const;
 
 export const HUB_FASE_A_BLOCKERS = [
-  "Analytics API Node ainda não publicada (0% — bloqueio P0).",
-  "GET /analytics/app com source=firebase e source=contentsquare.",
-  "GA4 Property ID + BigQuery Export ou GA4 Data API no servidor.",
-  "URL HML + CORS + auth Bearer/SSO.",
-  "docs/ANALYTICS_API_CONTRATO_BACKEND.md + exemplos JSON.",
+  "GA4 Property 530562554 — confirmar BigQuery Export activo (analytics_530562554).",
+  "Service account Viewer na propriedade GA4 + JSON no Secret Manager.",
+  "Deploy Cloud Run (services/analytics-api) → VITE_ANALYTICS_API_BASE_URL.",
+  "App: user property/event param `environment` (dev|hml|prod) no DebugView.",
+  "Contentsquare: CONTENTSQUARE_API_KEY no servidor (tab CS).",
 ] as const;
+
+export const ANALYTICS_API_LOCAL_DEV = {
+  readme: "services/analytics-api/README.md",
+  frontendBff: "docs/ANALYTICS_FRONTEND_BFF_CONFIG.md",
+  setupGcp: "docs/ANALYTICS_API_SETUP_GCP.md",
+  contrato: "docs/ANALYTICS_API_CONTRATO_BACKEND.md",
+  devCommand: "npm run analytics-api:dev",
+} as const;

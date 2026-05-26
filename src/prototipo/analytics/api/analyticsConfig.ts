@@ -35,6 +35,26 @@ export function analyticsApiBearerToken(): string | undefined {
 
 export type AnalyticsDataMode = "mock" | "api" | "api-fallback-mock";
 
+/** UI: borda warning quando dados não vêm da Analytics API em modo live. */
+export function isAnalyticsMockMode(mode: AnalyticsDataMode | undefined): boolean {
+  return mode === "mock" || mode === "api-fallback-mock" || mode === undefined;
+}
+
+/** GA4 Property ID conhecido (handoff) — só metadado UI / default servidor. */
+export const GA4_PROPERTY_ID_DEFAULT = "530562554";
+
+/** Stream Android (GA4 Admin → Fluxos de dados) — handoff Analytics. */
+export const GA4_ANDROID_STREAM_ID = "14319499513";
+
+/** Measurement ID do stream Android — handoff Analytics. */
+export const GA4_MEASUREMENT_ID_DEFAULT = "G-530562554";
+
+export function ga4PropertyIdDisplay(): string {
+  const v = import.meta.env.VITE_GA4_PROPERTY_ID;
+  if (typeof v === "string" && v.trim()) return v.trim();
+  return GA4_PROPERTY_ID_DEFAULT;
+}
+
 export function describeAnalyticsDataMode(mode: AnalyticsDataMode): string {
   switch (mode) {
     case "mock":

@@ -22,7 +22,13 @@ import { FirebaseAppDashboard } from "@/prototipo/analytics/FirebaseAppDashboard
 import { ContentsquareAppDashboard } from "@/prototipo/analytics/ContentsquareAppDashboard";
 import { AnalyticsHubStatusCard } from "@/prototipo/analytics/AnalyticsHubStatusCard";
 import { APP_FEATURES } from "@/prototipo/analytics/analyticsHubCatalog";
-import { analyticsApiBaseUrl, analyticsUseMock, describeAnalyticsDataMode } from "@/prototipo/analytics/api/analyticsConfig";
+import {
+  analyticsApiBaseUrl,
+  analyticsUseMock,
+  describeAnalyticsDataMode,
+  isAnalyticsMockMode,
+} from "@/prototipo/analytics/api/analyticsConfig";
+import { AnalyticsMockDataFrame } from "@/prototipo/analytics/AnalyticsMockDataFrame";
 import type { AnalyticsUiFilter } from "@/prototipo/analytics/api/analyticsApiClient";
 import { AnalyticsApiError } from "@/prototipo/analytics/api/analyticsApiTypes";
 import {
@@ -147,15 +153,19 @@ export function AnalyticsMetricasAppPage() {
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="page-title text-2xl">Métricas APP</h1>
             <Badge
-              variant={dataMode === "api" ? "default" : "secondary"}
-              className="font-normal"
+              variant={isAnalyticsMockMode(dataMode) ? "outline" : "default"}
+              className={cn(
+                "font-normal",
+                isAnalyticsMockMode(dataMode) && "border-warningBorder text-warning",
+              )}
               data-testid="analytics-badge-data-mode"
             >
               {badgeLabel}
             </Badge>
           </div>
           <p className="page-subtitle mt-0.5 max-w-2xl">
-            Firebase/GA4 (BigQuery) e Contentsquare via Analytics API FourMakers — mocks quando não há API configurada.
+            Dados agregados via BFF (<code className="text-xs">services/analytics-api</code> / Cloud Run) — o frontend não
+            chama GA4 nem BigQuery directamente.
           </p>
           {!analyticsUseMock() && analyticsApiBaseUrl() ? (
             <p className="mt-1 text-xs text-secondaryText">
@@ -202,6 +212,17 @@ export function AnalyticsMetricasAppPage() {
             variant="outline"
             size="sm"
             className="gap-2"
+            data-testid="analytics-download-bff-config"
+            onClick={() => downloadTechnicalDoc("ANALYTICS_FRONTEND_BFF_CONFIG.md")}
+          >
+            <Download className="size-4" aria-hidden />
+            Config BFF (.md)
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-2"
             data-testid="analytics-download-integracao-doc"
             onClick={() => downloadTechnicalDoc("ANALYTICS_METRICAS_APP_DOCUMENTACAO_TECNICA.md")}
           >
@@ -229,6 +250,13 @@ export function AnalyticsMetricasAppPage() {
             App — Contentsquare
           </TabsTrigger>
         </TabsList>
+
+        <p className="mt-3 text-xs text-secondaryText" data-testid="analytics-mock-legend">
+          <span className="inline-block rounded border-2 border-dashed border-warningBorder px-1.5 py-0.5 text-warning">
+            Borda warning
+          </span>{" "}
+          = dados mock ou fallback. Sem borda = resposta da Analytics API (GA4/BQ).
+        </p>
 
         <Card className="mt-4 border-borderSoft bg-surfaceElevated shadow-softToken" data-testid="analytics-card-filtros">
           <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0 pb-4 pt-6">
@@ -331,10 +359,18 @@ export function AnalyticsMetricasAppPage() {
         ) : (
           <>
             <TabsContent value="firebase" className="mt-4">
-              {firebaseQuery.data ? <FirebaseAppDashboard data={firebaseQuery.data.data} /> : null}
+              {firebaseQuery.data ? (
+                <AnalyticsMockDataFrame mode={firebaseQuery.data.mode} channel="firebase">
+                  <FirebaseAppDashboard data={firebaseQuery.data.data} />
+                </AnalyticsMockDataFrame>
+              ) : null}
             </TabsContent>
             <TabsContent value="contentsquare" className="mt-4">
-              {contentsquareQuery.data ? <ContentsquareAppDashboard data={contentsquareQuery.data.data} /> : null}
+              {contentsquareQuery.data ? (
+                <AnalyticsMockDataFrame mode={contentsquareQuery.data.mode} channel="contentsquare">
+                  <ContentsquareAppDashboard data={contentsquareQuery.data.data} />
+                </AnalyticsMockDataFrame>
+              ) : null}
             </TabsContent>
           </>
         )}
