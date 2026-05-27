@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { AgenteAutodescobertaPage } from "@/prototipo/pages/AgenteAutodescobertaPage";
 import { DashboardComercialQualidadeBasePage } from "@/prototipo/dashboard-comercial/DashboardComercialQualidadeBasePage";
 import { AnalyticsMetricasAppPage } from "@/prototipo/pages/AnalyticsMetricasAppPage";
+import { AberturaVagaSubstituicaoPage } from "@/prototipo/pages/AberturaVagaSubstituicaoPage";
 
 /** Grupo no menu lateral e na home */
 export type PrototipoMenuGroup = "prototipos" | "analytics";
@@ -61,6 +62,18 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
     routeSlug: "dashboard-comercial",
     documentationMarkdownFile: "DASHBOARD_COMERCIAL_DOCUMENTACAO_TECNICA.md",
     Component: DashboardComercialQualidadeBasePage,
+  },
+  {
+    id: "abertura-vaga-substituicao",
+    path: "/prototipo/recrutamento/abertura-vaga-substituicao",
+    menuGroup: "prototipos",
+    menuLabel: "Abertura de vaga — substituição",
+    cardTitle: "Abertura de vaga — substituição",
+    cardDescription:
+      "Etapa Contexto do formulário de abertura: origem da vaga, motivo de saída e colaborador substituído com cálculo de período de experiência (90 dias).",
+    routeSlug: "recrutamento/abertura-vaga-substituicao",
+    documentationMarkdownFile: "ABERTURA_VAGA_SUBSTITUICAO_DOCUMENTACAO_TECNICA.md",
+    Component: AberturaVagaSubstituicaoPage,
   },
   {
     id: "analytics-metricas-app",

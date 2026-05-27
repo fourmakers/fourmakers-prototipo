@@ -15,12 +15,13 @@ const GROUP_ICONS: Record<PrototipoMenuGroup, typeof Layers> = {
 
 function RegistryCardGrid({ entries }: { entries: PrototipoRegistryEntry[] }) {
   return (
-    <div className="grid max-w-4xl gap-4 sm:grid-cols-2">
+    <div className="flex flex-wrap gap-4">
       {entries.map((entry) => (
           <div
             key={entry.id}
             className={cn(
-              "group relative flex flex-col rounded-lg border border-borderSoft bg-surfaceElevated shadow-softToken",
+              "group relative flex w-full min-w-[min(100%,280px)] flex-col sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.667rem)]",
+              "rounded-lg border border-borderSoft bg-surfaceElevated shadow-softToken",
               "transition-shadow duration-200 hover:shadow-cardHoverToken",
             )}
           >
