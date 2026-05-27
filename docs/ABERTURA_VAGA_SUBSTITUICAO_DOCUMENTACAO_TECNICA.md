@@ -7,7 +7,15 @@
 
 Revelação progressiva no formulário de abertura de vaga: quando a origem é **substituição** e o motivo é **pedido de demissão** ou **desligamento**, o gestor informa o colaborador que sai. O sistema calcula se a saída ocorre nos primeiros **90 dias** (período de experiência) para alimentar o card "Subst. em Experiência" no dashboard do recrutador.
 
-## UI implementada no protótipo
+## Wizard (3 etapas)
+
+| Etapa | Rótulo | Conteúdo |
+|-------|--------|----------|
+| 1 | Motivos de abertura | Origem, motivo de saída, colaborador substituído |
+| 2 | Dados complementares | Formulário paridade `MovimentacaoVagaModal` (fourmakers-v2) |
+| 3 | Resumo da vaga | Paridade modal `VagaInfoModal` (Dados sobre a vaga) |
+
+## UI — etapa 1
 
 | Pergunta | Condição | Componente |
 |----------|----------|------------|

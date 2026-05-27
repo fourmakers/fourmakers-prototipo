@@ -8,8 +8,7 @@ export type MotivoSaida =
   | "demissao_voluntaria"
   | "desligamento"
   | "movimentacao_positiva"
-  | "aposentadoria"
-  | "desalinhamento_cultural";
+  | "aposentadoria";
 
 export interface ColaboradorRef {
   id: string;
@@ -30,37 +29,35 @@ export const MOTIVOS_EXIGEM_COLABORADOR: MotivoSaida[] = [
   "desligamento",
 ];
 
-export type ModeloTrabalho = "presencial" | "hibrido" | "remoto";
-
-export type NivelExperiencia = "junior" | "pleno" | "senior" | "especialista";
-
-export type TipoEmprego = "clt" | "pj" | "temporario";
-
-export type Permanencia = "determinado" | "indeterminado";
-
-export type PrioridadeRecrutamento = "baixa" | "media" | "alta" | "critica";
-
-export interface EtapaPerfilForm {
-  nome_perfil: string;
-  modelo_trabalho: ModeloTrabalho | null;
-  dias_hibridos: number;
-  nivel_experiencia: NivelExperiencia | null;
-  tipo_emprego: TipoEmprego | null;
-  permanencia: Permanencia | null;
-  hard_skills: string[];
-  atribuicoes: string;
-  custo_mensal: string;
+/** Paridade com InserirInformacoesComplementares (MovimentacaoVagaModal — fourmakers-v2) */
+export interface EtapaDadosComplementaresForm {
+  gestor_interno_id: string;
+  gestor_interno_nome: string;
+  proposta_crm: string;
+  tipo_vaga_id: string;
+  tipo_contratacao_id: string;
+  unidade_id: string;
+  maquina: string;
+  numero_de_vagas: number;
+  recrutador_id: string;
+  recrutador_nome: string;
+  emails_adicionais: string[];
+  observacoes_internas: string;
 }
 
-export interface EtapaUrgenciaForm {
-  prioridade: PrioridadeRecrutamento | null;
-  prazo_contratacao: string;
-  quantidade_posicoes: number;
-  observacoes_recrutador: string;
+export interface VagaResumoItem {
+  label: string;
+  value: string;
+}
+
+export interface VagaResumoModel {
+  left: VagaResumoItem[];
+  right: VagaResumoItem[];
+  observacoesInternas: string;
+  descricao: string;
 }
 
 export interface AberturaVagaFormCompleto {
   contexto: EtapaContextoForm;
-  perfil: EtapaPerfilForm;
-  urgencia: EtapaUrgenciaForm;
+  dadosComplementares: EtapaDadosComplementaresForm;
 }

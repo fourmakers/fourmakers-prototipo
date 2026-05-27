@@ -3,50 +3,52 @@ import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { AberturaVagaProgress } from "@/prototipo/recrutamento/abertura-vaga/components/AberturaVagaProgress";
 import { EtapaContexto } from "@/prototipo/recrutamento/abertura-vaga/components/EtapaContexto";
-import { EtapaPerfil } from "@/prototipo/recrutamento/abertura-vaga/components/EtapaPerfil";
-import { EtapaUrgencia } from "@/prototipo/recrutamento/abertura-vaga/components/EtapaUrgencia";
-import { EtapaRevisao } from "@/prototipo/recrutamento/abertura-vaga/components/EtapaRevisao";
+import { EtapaDadosComplementares } from "@/prototipo/recrutamento/abertura-vaga/components/EtapaDadosComplementares";
+import { EtapaResumoVaga } from "@/prototipo/recrutamento/abertura-vaga/components/EtapaResumoVaga";
 import { FormularioAberturaFooter } from "@/prototipo/recrutamento/abertura-vaga/components/FormularioAberturaFooter";
 import { useAberturaVagaWizard } from "@/prototipo/recrutamento/abertura-vaga/hooks/useAberturaVagaWizard";
 import { useEtapaContextoForm } from "@/prototipo/recrutamento/abertura-vaga/hooks/useEtapaContextoForm";
-import { useEtapaPerfilForm } from "@/prototipo/recrutamento/abertura-vaga/hooks/useEtapaPerfilForm";
-import { useEtapaUrgenciaForm } from "@/prototipo/recrutamento/abertura-vaga/hooks/useEtapaUrgenciaForm";
+import { useEtapaDadosComplementaresForm } from "@/prototipo/recrutamento/abertura-vaga/hooks/useEtapaDadosComplementaresForm";
 
 const TITULOS_ETAPA: Record<number, { titulo: string; descricao: string }> = {
   1: {
-    titulo: "Contexto da vaga",
+    titulo: "Motivos de abertura",
     descricao: "Por que essa vaga está sendo aberta?",
   },
   2: {
-    titulo: "Perfil da vaga",
-    descricao: "Identificação, modelo de trabalho, skills e atribuições (perfil de atuação).",
+    titulo: "Dados complementares",
+    descricao:
+      "Mesmo formulário da movimentação de vaga no kanban (/recrutamento) — passo 2 do modal.",
   },
   3: {
-    titulo: "Urgência",
-    descricao: "Prioridade, prazo e volume para o funil de recrutamento.",
-  },
-  4: {
-    titulo: "Revisão",
-    descricao: "Confira os dados antes de concluir a abertura.",
+    titulo: "Resumo da vaga",
+    descricao: "Visualização alinhada ao modal Dados sobre a vaga do kanban.",
   },
 };
 
 export function AberturaVagaSubstituicaoPage() {
   const wizard = useAberturaVagaWizard();
   const contextoForm = useEtapaContextoForm();
-  const perfilForm = useEtapaPerfilForm();
-  const urgenciaForm = useEtapaUrgenciaForm();
+  const dadosForm = useEtapaDadosComplementaresForm();
   const meta = TITULOS_ETAPA[wizard.etapaAtual];
 
-  /** Protótipo: Avançar sempre habilitado entre etapas para validação rápida */
   const handleAvancar = () => {
     if (!wizard.ehUltimaEtapa) {
       wizard.avancar();
     }
   };
 
+  const dadosCompletos = {
+    contexto: {
+      origem_vaga: contextoForm.origem_vaga,
+      motivo_saida: contextoForm.motivo_saida,
+      colaborador_substituido: contextoForm.colaborador_substituido,
+    },
+    dadosComplementares: dadosForm.form,
+  };
+
   return (
-    <div className="mx-auto max-w-[640px] pb-10">
+    <div className="mx-auto w-full max-w-2xl pb-10">
       <header className="mb-8">
         <nav
           className="mb-3 flex flex-wrap items-center gap-1.5 text-xs text-secondaryText"
@@ -79,21 +81,10 @@ export function AberturaVagaSubstituicaoPage() {
           </div>
 
           {wizard.etapaAtual === 1 && <EtapaContexto form={contextoForm} />}
-          {wizard.etapaAtual === 2 && <EtapaPerfil form={perfilForm} />}
-          {wizard.etapaAtual === 3 && <EtapaUrgencia form={urgenciaForm} />}
-          {wizard.etapaAtual === 4 && (
-            <EtapaRevisao
-              dados={{
-                contexto: {
-                  origem_vaga: contextoForm.origem_vaga,
-                  motivo_saida: contextoForm.motivo_saida,
-                  colaborador_substituido: contextoForm.colaborador_substituido,
-                },
-                perfil: perfilForm.form,
-                urgencia: urgenciaForm.form,
-              }}
-            />
+          {wizard.etapaAtual === 2 && (
+            <EtapaDadosComplementares form={dadosForm} dadosWizard={{ contexto: dadosCompletos.contexto }} />
           )}
+          {wizard.etapaAtual === 3 && <EtapaResumoVaga dados={dadosCompletos} />}
 
           <FormularioAberturaFooter
             podeVoltar={wizard.podeVoltar}

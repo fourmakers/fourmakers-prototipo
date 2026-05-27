@@ -6,7 +6,6 @@ const OPCOES: {
   value: MotivoSaida;
   title: string;
   subtitle: string;
-  subtitleWarning?: boolean;
 }[] = [
   {
     value: "demissao_voluntaria",
@@ -27,12 +26,6 @@ const OPCOES: {
     value: "aposentadoria",
     title: "Aposentadoria",
     subtitle: "Encerramento natural da carreira",
-  },
-  {
-    value: "desalinhamento_cultural",
-    title: "Não se adaptou à cultura",
-    subtitle: "Recomendamos revisar o perfil antes de publicar",
-    subtitleWarning: true,
   },
 ];
 
@@ -61,7 +54,6 @@ export function MotivoSaidaField({ visible, value, onChange }: MotivoSaidaFieldP
               value={opt.value}
               title={opt.title}
               subtitle={opt.subtitle}
-              subtitleClassName={opt.subtitleWarning ? "text-warning" : undefined}
               selected={value === opt.value}
               onSelect={() => onChange(opt.value)}
             />

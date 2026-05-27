@@ -7,9 +7,12 @@ interface AberturaVagaProgressProps {
 }
 
 export function AberturaVagaProgress({ etapaAtual }: AberturaVagaProgressProps) {
+  const stepCount = ABERTURA_VAGA_ETAPAS.length;
+
   return (
     <nav
-      className="mb-14 flex w-full items-start justify-between gap-1 sm:gap-2"
+      className="mb-14 grid w-full gap-0"
+      style={{ gridTemplateColumns: `repeat(${stepCount}, minmax(0, 1fr))` }}
       aria-label="Etapas do formulário"
     >
       {ABERTURA_VAGA_ETAPAS.map((step, index) => {
@@ -19,11 +22,7 @@ export function AberturaVagaProgress({ etapaAtual }: AberturaVagaProgressProps) 
         const isLast = index === ABERTURA_VAGA_ETAPAS.length - 1;
 
         return (
-          <div
-            key={step.id}
-            className="flex min-w-0 flex-1 flex-col items-center"
-            style={{ flexBasis: 0 }}
-          >
+          <div key={step.id} className="flex w-full min-w-0 flex-col items-center px-1">
             <div className="flex w-full items-center">
               <div
                 className={cn(
@@ -62,7 +61,7 @@ export function AberturaVagaProgress({ etapaAtual }: AberturaVagaProgressProps) 
             </div>
             <span
               className={cn(
-                "mt-2 w-full px-0.5 text-center text-[11px] font-medium leading-snug",
+                "mt-2 flex min-h-[2.5rem] w-full items-start justify-center px-0.5 text-center text-[10px] font-medium leading-snug sm:min-h-[2.25rem] sm:text-[11px]",
                 (active || done) && "font-semibold text-primaryText",
                 !active && !done && "text-secondaryText",
               )}
