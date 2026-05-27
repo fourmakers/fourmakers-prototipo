@@ -15,13 +15,15 @@ Revelação progressiva no formulário de abertura de vaga: quando a origem é *
 | 2 | Dados complementares | Formulário paridade `MovimentacaoVagaModal` (fourmakers-v2) |
 | 3 | Resumo da vaga | Paridade modal `VagaInfoModal` (Dados sobre a vaga) |
 
-## UI — etapa 1
+## UI — etapa 1 (uma subseção por vez)
 
-| Pergunta | Condição | Componente |
-|----------|----------|------------|
-| Origem da vaga | Sempre | `OrigemVagaField` |
-| Motivo de saída | `origem = substituicao` | `MotivoSaidaField` + `RevealField` |
-| Colaborador substituído | `motivo IN (demissao_voluntaria, desligamento)` | `ColaboradorSubstituidoField` |
+| Subseção | Quando aparece | Ao selecionar |
+|----------|----------------|---------------|
+| Origem da vaga | Início do step | Se ≠ substituição → step 2; se substituição → subseção motivo |
+| Motivo de saída | Após escolher substituição | Se não exige colaborador → step 2; senão → lista de colaboradores |
+| Colaborador substituído | Demissão ou desligamento | Ao selecionar → step 2 |
+
+`Voltar` no step 1 navega entre subseções antes de sair do step.
 
 ## Código
 

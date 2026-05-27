@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,7 +14,7 @@ import { useEtapaDadosComplementaresForm } from "@/prototipo/recrutamento/abertu
 const TITULOS_ETAPA: Record<number, { titulo: string; descricao: string }> = {
   1: {
     titulo: "Motivos de abertura",
-    descricao: "Por que essa vaga está sendo aberta?",
+    descricao: "Responda uma pergunta por vez — ao escolher, o fluxo avança automaticamente.",
   },
   2: {
     titulo: "Dados complementares",
@@ -28,15 +29,35 @@ const TITULOS_ETAPA: Record<number, { titulo: string; descricao: string }> = {
 
 export function AberturaVagaSubstituicaoPage() {
   const wizard = useAberturaVagaWizard();
-  const contextoForm = useEtapaContextoForm();
+  const concluirMotivos = useCallback(() => {
+    wizard.avancar();
+  }, [wizard.avancar]);
+  const contextoForm = useEtapaContextoForm(concluirMotivos);
   const dadosForm = useEtapaDadosComplementaresForm();
   const meta = TITULOS_ETAPA[wizard.etapaAtual];
+
+  useEffect(() => {
+    if (wizard.etapaAtual === 1) {
+      contextoForm.syncSubsecaoFromEstado();
+    }
+  }, [wizard.etapaAtual, contextoForm.syncSubsecaoFromEstado]);
 
   const handleAvancar = () => {
     if (!wizard.ehUltimaEtapa) {
       wizard.avancar();
     }
   };
+
+  const handleVoltar = () => {
+    if (wizard.etapaAtual === 1 && contextoForm.podeVoltarSubsecao) {
+      contextoForm.voltarSubsecao();
+      return;
+    }
+    wizard.voltar();
+  };
+
+  const podeVoltar =
+    wizard.etapaAtual === 1 ? contextoForm.podeVoltarSubsecao : wizard.podeVoltar;
 
   const dadosCompletos = {
     contexto: {
@@ -87,10 +108,10 @@ export function AberturaVagaSubstituicaoPage() {
           {wizard.etapaAtual === 3 && <EtapaResumoVaga dados={dadosCompletos} />}
 
           <FormularioAberturaFooter
-            podeVoltar={wizard.podeVoltar}
+            podeVoltar={podeVoltar}
             podeAvancar
             ehUltimaEtapa={wizard.ehUltimaEtapa}
-            onVoltar={wizard.voltar}
+            onVoltar={handleVoltar}
             onAvancar={handleAvancar}
           />
         </CardContent>
