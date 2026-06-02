@@ -4,6 +4,7 @@ import { DashboardComercialQualidadeBasePage } from "@/prototipo/dashboard-comer
 import { AnalyticsMetricasAppPage } from "@/prototipo/pages/AnalyticsMetricasAppPage";
 import { AberturaVagaSubstituicaoPage } from "@/prototipo/pages/AberturaVagaSubstituicaoPage";
 import { AnaliseAderenciaPage } from "@/prototipo/pages/AnaliseAderenciaPage";
+import { CriacaoVagaAssistentePage } from "@/prototipo/pages/CriacaoVagaAssistentePage";
 
 /** Grupo no menu lateral e na home */
 export type PrototipoMenuGroup = "prototipos" | "analytics";
@@ -64,6 +65,18 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
     routeSlug: "dashboard-comercial",
     documentationMarkdownFile: "DASHBOARD_COMERCIAL_DOCUMENTACAO_TECNICA.md",
     Component: DashboardComercialQualidadeBasePage,
+  },
+  {
+    id: "criacao-vaga-assistente",
+    path: "/criacao-vaga-assistente",
+    menuGroup: "prototipos",
+    menuLabel: "Assistente criação de vaga",
+    cardTitle: "Assistente de criação de vaga",
+    cardDescription:
+      "Otimize vagas com IA (formulário ou prompt): contexto, desafios, hierarquia de match, anti-churn e critérios para Análise de aderência.",
+    routeSlug: "criacao-vaga-assistente",
+    documentationMarkdownFile: "CRIACAO_VAGA_ASSISTENTE_DOCUMENTACAO_TECNICA.md",
+    Component: CriacaoVagaAssistentePage,
   },
   {
     id: "analise-aderencia",
