@@ -7,7 +7,7 @@ alwaysApply: true
 
 Ao trabalhar neste repositório, **considere sempre o arquivo raiz PROTOTIPACAO.md**.
 
-- Ele define o hub de protótipos, rotas em `/prototipo/*`, registro em `src/prototipo/registry.ts` e regras de DS (só tokens, componentes do DS, etc.).
+- Ele define o hub de protótipos, rotas na raiz do app (sem prefixo `/prototipo/`; ver `path` em `registry.ts`), registro em `src/prototipo/registry.ts` e regras de DS (só tokens, componentes do DS, etc.).
 - Para novas telas: criar em `src/prototipo/pages/` e registrar em `registry.ts`; o usuário só precisa dizer *o que a tela deve exibir*.
 - Design system e tokens: `src/index.css` e `tailwind.config.ts`.
 

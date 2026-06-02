@@ -4,7 +4,7 @@ Documento de **handoff** para a equipa que vai implementar a **Analytics API Fou
 
 - **Público:** dev backend, data/analytics, DevOps, PO técnico  
 - **Consumidor:** dev front do hub (`prototipo-fourmakers`)  
-- **Protótipo:** `/prototipo/analytics/metricas-app`  
+- **Protótipo:** `/analytics/metricas-app`  
 - **Doc técnica do UI:** `ANALYTICS_METRICAS_APP_DOCUMENTACAO_TECNICA.md`  
 - **Criado em:** 08/05/2026  
 
@@ -32,7 +32,7 @@ Enquanto a API não existir ou não estiver acessível, o hub mostra **dados sim
 - Chama `GET /analytics/app` com query params alinhados ao hub FourMakers.  
 - Aceita envelope `{ retorno, sucesso, mensagem, erros }`.  
 - Fallback de rota legada: `GET /api/analytics/app/firebase/dashboard` e `.../contentsquare/dashboard`.  
-- Converte resposta para os tipos em `src/prototipo/analytics/types.ts`.  
+- Converte resposta para os tipos em `src/analytics/types.ts`.  
 - Suporta payload **já no formato do dashboard** ou DTO **unificado** (normalizer em `analyticsNormalizers.ts`).  
 - Variáveis: ver `.env.example` na raiz do repo.
 
@@ -212,8 +212,8 @@ Regras dos exemplos:
 
 O contrato deve ser compatível com:
 
-- `src/prototipo/analytics/types.ts` — shape preferido dos dashboards  
-- `src/prototipo/analytics/api/analyticsApiTypes.ts` — envelope e DTO unificado  
+- `src/analytics/types.ts` — shape preferido dos dashboards  
+- `src/analytics/api/analyticsApiTypes.ts` — envelope e DTO unificado  
 
 **Formato preferido do `retorno` em `GET /analytics/app`:**
 
@@ -325,4 +325,4 @@ VITE_ANALYTICS_API_TOKEN=<jwt-hml-se-aplicavel>
 
 ---
 
-*Quando `ANALYTICS_API_CONTRATO_BACKEND.md` e os exemplos JSON existirem, o dev front liga `VITE_ANALYTICS_USE_MOCK=false` e valida em http://localhost:8080/prototipo/analytics/metricas-app.*
+*Quando `ANALYTICS_API_CONTRATO_BACKEND.md` e os exemplos JSON existirem, o dev front liga `VITE_ANALYTICS_USE_MOCK=false` e valida em http://localhost:8080/analytics/metricas-app.*

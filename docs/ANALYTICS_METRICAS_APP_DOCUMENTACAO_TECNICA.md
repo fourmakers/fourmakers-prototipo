@@ -1,6 +1,6 @@
 # Métricas APP (Analytics) – Documentação Técnica e integração de dados reais
 
-Documentação para o protótipo **Métricas APP** no hub (`/prototipo/analytics/metricas-app`). O UI actual usa **mocks**; este guia é o passo a passo para o dev substituir mocks por **dados reais** do Firebase Analytics/GA4 (via BigQuery ou API) e do Contentsquare.
+Documentação para o protótipo **Métricas APP** no hub (`/analytics/metricas-app`). O UI actual usa **mocks**; este guia é o passo a passo para o dev substituir mocks por **dados reais** do Firebase Analytics/GA4 (via BigQuery ou API) e do Contentsquare.
 
 - **Handoff para a equipa API (o que falta + o que informar):** [`ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md`](./ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md)
 - **Criado em:** 08/05/2026
@@ -12,10 +12,10 @@ Documentação para o protótipo **Métricas APP** no hub (`/prototipo/analytics
 
 | Item | Valor |
 |------|--------|
-| **Rota** | `/prototipo/analytics/metricas-app` |
+| **Rota** | `/analytics/metricas-app` |
 | **Menu** | Grupo **Analytics** → Métricas APP |
 | **Fontes na UI** | Tabs: **App — Firebase** \| **App — Contentsquare** |
-| **Dados hoje** | **Simulados por defeito**; com API: `src/prototipo/analytics/api/analyticsApiClient.ts` |
+| **Dados hoje** | **Simulados por defeito**; com API: `src/analytics/api/analyticsApiClient.ts` |
 | **Ficheiros mock** | `mockFirebaseApp.ts`, `mockContentsquareApp.ts` (fallback / dev offline) |
 | **Cliente API** | `api/analyticsApiClient.ts`, `api/analyticsQueries.ts`, `api/analyticsNormalizers.ts` |
 | **Tipos/DTO** | `types.ts`, `api/analyticsApiTypes.ts` |
@@ -71,7 +71,7 @@ FourMakers Flutter App
 
 ### Fase 3 — Front do hub (implementado no protótipo)
 
-1. `src/prototipo/analytics/api/` — cliente, queries, normalizers, config.
+1. `src/analytics/api/` — cliente, queries, normalizers, config.
 2. `AnalyticsMetricasAppPage.tsx` — TanStack Query + estados loading/erro/retry.
 3. Variáveis `.env` (ver `.env.example`):
    - `VITE_ANALYTICS_API_BASE_URL` — base da Analytics API
@@ -289,7 +289,7 @@ O app deve usar **SDK directo** como principal; GTM é complementar. O dashboard
 ## §9. Referências neste repositório
 
 - `PROTOTIPACAO.md` — convenções do hub
-- `src/prototipo/analytics/types.ts` — contrato UI
+- `src/analytics/types.ts` — contrato UI
 - `src/prototipo/registry.ts` — entrada `analytics-metricas-app`
 - `public/design-toolkit.md` — design system
 

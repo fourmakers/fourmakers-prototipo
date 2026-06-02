@@ -3,7 +3,7 @@
 Documentação **multi-audiência** do protótipo **Análise de aderência** no hub Fourmakers: triagem inicial de candidatos com IA, panorama de vaga/mercado, ranking de aderência, parecer por critérios, **Radar profissional** e ranking pocket flutuante.
 
 **Criado em:** 27/05/2026  
-**Última atualização:** 02/06/2026 — layout 2:1, 10 candidatos, pocket ranking colapsável, Radar profissional, documentação completa Bloco A/B.
+**Última atualização:** 02/06/2026 — rotas sem prefixo `/prototipo/` (ex.: `/recrutamento/analise-aderencia`); redirect das URLs legadas.
 
 **Estado:** protótipo front com mocks; integração API .NET 8 **pendente**.
 
@@ -29,7 +29,7 @@ Documentação **multi-audiência** do protótipo **Análise de aderência** no 
 
 | Item | Descrição |
 |------|-----------|
-| **Rota (protótipo)** | `/prototipo/recrutamento/analise-aderencia` |
+| **Rota (protótipo)** | `/recrutamento/analise-aderencia` |
 | **Registo hub** | `id: analise-aderencia` em `src/prototipo/registry.ts` |
 | **Título na UI** | Análise de aderência |
 | **Descrição (card)** | Triagem com IA: upload de CV/ZIP/LinkedIn, panorama da vaga, ranking e parecer visual (radar, critérios, PDI e trajetória). |
@@ -396,7 +396,7 @@ Ver `src/prototipo/analise-aderencia/types.ts` (perfil, kpis, inscrições, rela
 
 ## 16. Resumo para o time
 
-Protótipo completo de **triagem com IA** no hub `/prototipo/*`: UX em 3 fases, resultados em **2 colunas (2:1)**, **10 candidatos**, **pocket ranking** colapsável e **Radar profissional**. Pronto para validação de produto; backend deve expor jobs de análise, resultado tipado como `ResultadoAnaliseAderencia` e endpoint de radar com envelope padrão.
+Protótipo completo de **triagem com IA** no hub (rotas na raiz): UX em 3 fases, resultados em **2 colunas (2:1)**, **10 candidatos**, **pocket ranking** colapsável e **Radar profissional**. Pronto para validação de produto; backend deve expor jobs de análise, resultado tipado como `ResultadoAnaliseAderencia` e endpoint de radar com envelope padrão.
 
 ## 17. Rodapé
 

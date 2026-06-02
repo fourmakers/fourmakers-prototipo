@@ -24,7 +24,7 @@ Documentação **autocontida** para migração do fluxo **Conversa de autodescob
 
 | Item | Descrição |
 |------|-----------|
-| **Rota (protótipo)** | `/prototipo/agente-autodescoberta` (dentro de `MainLayout`; ver `src/prototipo/registry.ts`). |
+| **Rota (protótipo)** | `/agente-autodescoberta` (dentro de `MainLayout`; ver `src/prototipo/registry.ts`). |
 | **Rota alvo (produto)** | `/autodescoberta` (portal do colaborador) — a definir no app global. |
 | **Título UI** | Agente de Autodescoberta / Fourmakers — conversa de autodescoberta. |
 | **Descrição** | Chat guiado em 9 etapas com valores fixos (32), devolução com tags `[TECNICAS]`, `[COMPORTAMENTAIS]`, `[CARGOS]`; pós-conversa com confirmação de análise, composição e carreiras. |
@@ -81,7 +81,7 @@ Documentação **autocontida** para migração do fluxo **Conversa de autodescob
 src/prototipo/registry.ts          → entrada PROTOTIPO_REGISTRY
 src/prototipo/pages/
   AgenteAutodescobertaPage.tsx     → orquestra chat + estado tecnicas/comportamentais/cargos/flowComplete
-src/prototipo/agente-autodescoberta/
+src/agente-autodescoberta/
   autodescobertaValues.ts          → 32 valores
   autodescobertaParse.ts           → parseTag, stripAgentTags
   autodescobertaMockChat.ts        → mensagens por turno

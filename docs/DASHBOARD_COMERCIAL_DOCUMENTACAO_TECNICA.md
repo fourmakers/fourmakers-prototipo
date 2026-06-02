@@ -24,10 +24,10 @@ Documento **único e autocontido** para o protótipo **Dashboard comercial — Q
 
 | Campo | Valor |
 |-------|--------|
-| **Rota (protótipo)** | `/prototipo/dashboard-comercial` |
+| **Rota (protótipo)** | `/dashboard-comercial` |
 | **Rota alvo (app principal)** | `/dashboard-comercial` ou equivalente ao módulo comercial (a confirmar com o time) |
 | **Registo** | `PROTOTIPO_REGISTRY` → `id`: `dashboard-comercial-qualidade-base`, `routeSlug`: `dashboard-comercial` |
-| **Componente de página** | `DashboardComercialQualidadeBasePage` em `src/prototipo/dashboard-comercial/DashboardComercialQualidadeBasePage.tsx` |
+| **Componente de página** | `DashboardComercialQualidadeBasePage` em `src/dashboard-comercial/DashboardComercialQualidadeBasePage.tsx` |
 | **Mocks / tipos** | `mockQualidadeBase.ts`, `types.ts`, `nivelUi.tsx` |
 | **Doc para download na home** | `documentationMarkdownFile`: `DASHBOARD_COMERCIAL_DOCUMENTACAO_TECNICA.md` |
 
@@ -73,7 +73,7 @@ Documento **único e autocontido** para o protótipo **Dashboard comercial — Q
 
 | Item | Descrição |
 |------|-----------|
-| **Rota (protótipo)** | `/prototipo/dashboard-comercial` |
+| **Rota (protótipo)** | `/dashboard-comercial` |
 | **Título** | Dashboard comercial |
 | **Descrição (UI)** | Radar de relacionamento — KPIs de saúde, alcance e gráficos |
 | **Objetivo de negócio** | Priorizar ações comerciais (risco de esfriamento, gaps cadastrais). |
@@ -422,7 +422,7 @@ public class NivelBreakdownDto {
 | `dataCriacao` | string | Sim | YYYY-MM-DD |
 | `dataAlteracao` | string? | Não | Auditoria |
 
-Espelho TypeScript: `src/prototipo/dashboard-comercial/types.ts`.
+Espelho TypeScript: `src/dashboard-comercial/types.ts`.
 
 ---
 
@@ -459,7 +459,7 @@ Espelho TypeScript: `src/prototipo/dashboard-comercial/types.ts`.
 
 ## 15. Resumo para o time
 
-**Uma frase:** Qualidade da base no Dashboard comercial — cinco KPIs, semáforo de visitas (C-Level/Decisor), painéis inline; protótipo com mocks em `src/prototipo/dashboard-comercial/`.
+**Uma frase:** Qualidade da base no Dashboard comercial — cinco KPIs, semáforo de visitas (C-Level/Decisor), painéis inline; protótipo com mocks em `src/dashboard-comercial/`.
 
 **APIs a implementar:** `resumo`, `stakeholders`, `por-cliente` (§10).
 
@@ -533,7 +533,7 @@ Integração futura: cliente HTTP + hooks alinhados ao app principal.
 
 ## §10 — Consumo por IA
 
-Chunk por secção; sinónimos: "qualidade da base", "semáforo visitas", "orçamento 2026". Limitação: mocks e rotas `/prototipo/*`.
+Chunk por secção; sinónimos: "qualidade da base", "semáforo visitas", "orçamento 2026". Limitação: mocks e rotas na raiz do app.
 
 ---
 
@@ -554,7 +554,7 @@ URL state; toast de API real; E2E; política do zero em orçamento.
 - `PROTOTIPACAO.md`, `public/design-toolkit.md`  
 - `docs/ORIENTACAO_DOCUMENTACAO_TECNICA_PROTOTIPOS_EXTERNOS.md`  
 - `docs/_MODELO_MEUS_TALENTOS_DOCUMENTACAO_TECNICA.md` (guia de formato, não é doc da feature)  
-- `src/prototipo/registry.ts`, `src/prototipo/dashboard-comercial/*`
+- `src/prototipo/registry.ts`, `src/dashboard-comercial/*`
 
 ---
 

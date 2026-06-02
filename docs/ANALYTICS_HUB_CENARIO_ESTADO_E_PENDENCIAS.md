@@ -110,7 +110,7 @@ Sem Analytics API nem BigQuery, a equipa já pode usar:
 | Integração TanStack Query + mock/real | Falta | Depende da API HML |
 | Perfis (executivo, produto, UX, comercial, tecnologia) | Falta | RBAC no front após API |
 
-**Entregável mínimo:** rota `/prototipo/analytics/metricas-app` (ou equivalente) + cliente HTTP só para `Analytics API` + estados loading/empty/error.
+**Entregável mínimo:** rota `/analytics/metricas-app` (ou equivalente) + cliente HTTP só para `Analytics API` + estados loading/empty/error.
 
 ### 4.2 Analytics API (Node.js — Fastify ou NestJS)
 
@@ -310,7 +310,7 @@ VITE_ANALYTICS_API_TOKEN=<jwt-hml>
 
 ```bash
 npm run dev
-# Rota alvo: /prototipo/analytics/metricas-app (confirmar em registry.ts ao implementar)
+# Rota alvo: /analytics/metricas-app (confirmar em registry.ts ao implementar)
 ```
 
 ---

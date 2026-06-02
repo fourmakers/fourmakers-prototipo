@@ -1,6 +1,6 @@
 # Abertura de vaga — Seleção de colaborador substituído
 
-**Protótipo:** `/prototipo/recrutamento/abertura-vaga-substituicao`  
+**Protótipo:** `/recrutamento/abertura-vaga-substituicao`  
 **Módulo:** Recrutamento · Etapa 1 (Contexto)
 
 ## Objetivo
@@ -30,9 +30,9 @@ Revelação progressiva no formulário de abertura de vaga: quando a origem é *
 | Artefato | Caminho |
 |----------|---------|
 | Página | `src/prototipo/pages/AberturaVagaSubstituicaoPage.tsx` |
-| Etapa | `src/prototipo/recrutamento/abertura-vaga/components/EtapaContexto.tsx` |
-| Cálculo experiência | `src/prototipo/recrutamento/abertura-vaga/utils/experiencia.ts` |
-| Mock colaboradores | `src/prototipo/recrutamento/abertura-vaga/mocks/colaboradoresAtivos.ts` |
+| Etapa | `src/recrutamento/abertura-vaga/components/EtapaContexto.tsx` |
+| Cálculo experiência | `src/recrutamento/abertura-vaga/utils/experiencia.ts` |
+| Mock colaboradores | `src/recrutamento/abertura-vaga/mocks/colaboradoresAtivos.ts` |
 
 ## Habilitação do botão Avançar
 

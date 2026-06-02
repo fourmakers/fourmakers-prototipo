@@ -14,7 +14,7 @@ O hub **não** chama GA4 Data API, BigQuery nem Firebase Admin no browser. Conso
 [Protótipo Hub] --HTTP--> [analytics-api / Cloud Run] --GA4 API / BQ--> [GA4 / BigQuery]
 ```
 
-Implementação: [src/prototipo/analytics/api/analyticsApiClient.ts](../src/prototipo/analytics/api/analyticsApiClient.ts) — `GET /analytics/app?source=firebase|contentsquare`.
+Implementação: [src/analytics/api/analyticsApiClient.ts](../src/analytics/api/analyticsApiClient.ts) — `GET /analytics/app?source=firebase|contentsquare`.
 
 ---
 
@@ -40,7 +40,7 @@ VITE_GA4_PROPERTY_ID=530562554
 ```
 
 Terminal 1: `npm run analytics-api:dev`  
-Terminal 2: `npm run dev` → http://localhost:8080/prototipo/analytics/metricas-app
+Terminal 2: `npm run dev` → http://localhost:8080/analytics/metricas-app
 
 ### Exemplo — após deploy Cloud Run
 

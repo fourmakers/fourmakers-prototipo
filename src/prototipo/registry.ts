@@ -14,13 +14,14 @@ export const MENU_GROUP_LABELS: Record<PrototipoMenuGroup, string> = {
 };
 
 /**
- * Registro de protótipos sob `/prototipo/*`.
+ * Registro de protótipos (rotas na raiz do app, sem prefixo `/prototipo/`).
+ * URL publicada: `{base}/fourmakers-prototipo/{routeSlug}` (ex.: `/recrutamento/analise-aderencia`).
  * Novo protótipo: crie a página, importe aqui e adicione um item — menu e cards da home atualizam automaticamente.
  */
 export interface PrototipoRegistryEntry {
   /** Identificador estável (rota e chave React) */
   id: string;
-  /** Caminho completo, ex.: `/prototipo/minha-feature` */
+  /** Caminho completo, ex.: `/minha-feature` ou `/recrutamento/minha-feature` */
   path: string;
   /** Grupo no menu (Protótipos ou Analytics) */
   menuGroup: PrototipoMenuGroup;
@@ -43,7 +44,7 @@ export interface PrototipoRegistryEntry {
 export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   {
     id: "agente-autodescoberta",
-    path: "/prototipo/agente-autodescoberta",
+    path: "/agente-autodescoberta",
     menuGroup: "prototipos",
     menuLabel: "Agente de Autodescoberta",
     cardTitle: "Agente de Autodescoberta",
@@ -55,7 +56,7 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   },
   {
     id: "dashboard-comercial-qualidade-base",
-    path: "/prototipo/dashboard-comercial",
+    path: "/dashboard-comercial",
     menuGroup: "prototipos",
     menuLabel: "Dashboard comercial",
     cardTitle: "Dashboard comercial",
@@ -66,7 +67,7 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   },
   {
     id: "analise-aderencia",
-    path: "/prototipo/recrutamento/analise-aderencia",
+    path: "/recrutamento/analise-aderencia",
     menuGroup: "prototipos",
     menuLabel: "Análise de aderência",
     cardTitle: "Análise de aderência",
@@ -78,7 +79,7 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   },
   {
     id: "abertura-vaga-substituicao",
-    path: "/prototipo/recrutamento/abertura-vaga-substituicao",
+    path: "/recrutamento/abertura-vaga-substituicao",
     menuGroup: "prototipos",
     menuLabel: "Abertura de vaga — substituição",
     cardTitle: "Abertura de vaga — substituição",
@@ -90,7 +91,7 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   },
   {
     id: "analytics-metricas-app",
-    path: "/prototipo/analytics/metricas-app",
+    path: "/analytics/metricas-app",
     menuGroup: "analytics",
     menuLabel: "Métricas APP",
     cardTitle: "Métricas APP",

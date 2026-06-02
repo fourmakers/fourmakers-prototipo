@@ -1,11 +1,13 @@
 # Prototipação — Hub de protótipos Fourmakers
 
-Repositório de **protótipos de interface** com Vite, React, TypeScript e design system alinhado ao fourmakers-v2. A aplicação é um **hub**: página inicial com cards e rotas sob **`/prototipo/*`**, com menu lateral **Protótipos** gerado a partir do registro central.
+Repositório de **protótipos de interface** com Vite, React, TypeScript e design system alinhado ao fourmakers-v2. A aplicação é um **hub**: página inicial com cards e rotas na **raiz do app** (ex.: `/recrutamento/analise-aderencia`), com menu lateral **Protótipos** gerado a partir do registro central.
+
+No GitHub Pages o site fica em `https://<org>.github.io/fourmakers-prototipo/` — **sem** segmento `/prototipo/` repetido no path (o nome do repositório já identifica o hub).
 
 ## Escopo
 
-- **Início (`/`)** — lista em cards dos protótipos registrados (atalhos para `/prototipo/...`).
-- **Módulo `/prototipo/*`** — cada feature em prototipação vive em uma rota filha; novos itens entram no menu automaticamente quando adicionados ao registro.
+- **Início (`/`)** — lista em cards dos protótipos registrados (atalhos para cada `path` do registro).
+- **Features** — cada protótipo usa o `path` definido em `registry.ts` (ex.: `/dashboard-comercial`, `/analytics/metricas-app`); URLs antigas com prefixo `/prototipo/` redirecionam automaticamente.
 
 Todas as telas usam **Header**, **Sidebar** e **área de conteúdo** do `MainLayout`.
 
@@ -42,7 +44,7 @@ Todas as telas usam **Header**, **Sidebar** e **área de conteúdo** do `MainLay
 ## Como criar um novo protótipo
 
 1. **Criar a página** em `src/prototipo/pages/NomeDaFeaturePage.tsx` (export nomeado).
-2. **Registrar** em `src/prototipo/registry.ts`: importe o componente e adicione um objeto com `id`, `path` (`/prototipo/slug-kebab`), `menuLabel`, `cardTitle`, `cardDescription`, `routeSlug`, `Component`, e opcionalmente **`documentationMarkdownFile`** (ex.: `MINHA_FEATURE_DOCUMENTACAO_TECNICA.md`) para o botão de download na home. Os `.md` em `docs/` são copiados para `public/docs/` ao correr `npm run sync:prototipo-docs` (incluído em `dev` e `build`).
+2. **Registrar** em `src/prototipo/registry.ts`: importe o componente e adicione um objeto com `id`, `path` (ex.: `/slug-kebab` ou `/area/slug-kebab` — **sem** prefixo `/prototipo/`), `menuLabel`, `cardTitle`, `cardDescription`, `routeSlug`, `Component`, e opcionalmente **`documentationMarkdownFile`** (ex.: `MINHA_FEATURE_DOCUMENTACAO_TECNICA.md`) para o botão de download na home. Os `.md` em `docs/` são copiados para `public/docs/` ao correr `npm run sync:prototipo-docs` (incluído em `dev` e `build`).
 3. A rota em `App.tsx` é criada **automaticamente** a partir do registro; o item aparece no grupo **Protótipos** no menu e no grid da home.
 
 Não é necessário editar o `Sidebar` manualmente para novos itens.
@@ -53,7 +55,7 @@ Não é necessário editar o `Sidebar` manualmente para novos itens.
 
 - [ ] Página com `PageHeader` (ou título + subtítulo).
 - [ ] Tokens apenas (sem cores soltas do Tailwind sem token).
-- [ ] Entrada em `PROTOTIPO_REGISTRY` com `path` único sob `/prototipo/`.
+- [ ] Entrada em `PROTOTIPO_REGISTRY` com `path` único na raiz (sem `/prototipo/`).
 - [ ] Se existir doc técnica em `docs/`, `documentationMarkdownFile` + ficheiro `*_DOCUMENTACAO_TECNICA.md` (sincronizado para `public/docs/` via build ou `npm run sync:prototipo-docs`).
 
 ---

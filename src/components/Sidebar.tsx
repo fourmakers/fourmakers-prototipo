@@ -178,7 +178,9 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
   const pathname = location.pathname;
 
   const isHubChildActive = PROTOTIPO_REGISTRY.some((e) => e.path === pathname);
-  const [prototiposExpanded, setPrototiposExpanded] = useState(() => pathname.startsWith("/prototipo"));
+  const [prototiposExpanded, setPrototiposExpanded] = useState(
+    () => pathname !== "/" && PROTOTIPO_REGISTRY.some((e) => e.path === pathname),
+  );
   const [analyticsExpanded, setAnalyticsExpanded] = useState(() =>
     registryByMenuGroup("analytics").some((e) => e.path === pathname),
   );

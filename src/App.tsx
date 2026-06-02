@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PrototipoHomePage } from "@/prototipo/pages/PrototipoHomePage";
 import { PROTOTIPO_REGISTRY } from "@/prototipo/registry";
@@ -28,6 +28,13 @@ const App = () => (
             <Route path="/" element={<PrototipoHomePage />} />
             {PROTOTIPO_REGISTRY.map((entry) => (
               <Route key={entry.id} path={entry.path} element={<entry.Component />} />
+            ))}
+            {PROTOTIPO_REGISTRY.map((entry) => (
+              <Route
+                key={`legacy-${entry.id}`}
+                path={`/prototipo${entry.path}`}
+                element={<Navigate to={entry.path} replace />}
+              />
             ))}
             <Route path="*" element={<NotFound />} />
           </Route>
