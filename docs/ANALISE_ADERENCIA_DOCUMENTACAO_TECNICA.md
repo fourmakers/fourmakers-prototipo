@@ -3,7 +3,7 @@
 Documentação **multi-audiência** do protótipo **Análise de aderência** no hub Fourmakers: triagem inicial de candidatos com IA, panorama de vaga/mercado, ranking de aderência, parecer por critérios, **Radar profissional** e ranking pocket flutuante.
 
 **Criado em:** 27/05/2026  
-**Última atualização:** 02/06/2026 — rotas sem prefixo `/prototipo/` (ex.: `/recrutamento/analise-aderencia`); redirect das URLs legadas.
+**Última atualização:** 02/06/2026 — rotas sem prefixo `/prototipo/` (ex.: `/analise-aderencia`); redirect das URLs legadas.
 
 **Estado:** protótipo front com mocks; integração API .NET 8 **pendente**.
 
@@ -29,7 +29,7 @@ Documentação **multi-audiência** do protótipo **Análise de aderência** no 
 
 | Item | Descrição |
 |------|-----------|
-| **Rota (protótipo)** | `/recrutamento/analise-aderencia` |
+| **Rota (protótipo)** | `/analise-aderencia` |
 | **Registo hub** | `id: analise-aderencia` em `src/prototipo/registry.ts` |
 | **Título na UI** | Análise de aderência |
 | **Descrição (card)** | Triagem com IA: upload de CV/ZIP/LinkedIn, panorama da vaga, ranking e parecer visual (radar, critérios, PDI e trajetória). |
@@ -148,8 +148,8 @@ Resumo:
 | Método | Path (sugerido) | Uso |
 |--------|-----------------|-----|
 | GET | `/api/recrutamento/vagas/{vagaId}/contexto-analise` | Desafios + objetivos para UI |
-| POST | `/api/recrutamento/analise-aderencia` | Inicia job (multipart + urls) |
-| GET | `/api/recrutamento/analise-aderencia/{jobId}` | Status + resultado |
+| POST | `/api/analise-aderencia` | Inicia job (multipart + urls) |
+| GET | `/api/analise-aderencia/{jobId}` | Status + resultado |
 | GET | `/api/recrutamento/candidatos/{candidatoId}/radar-profissional` | Drawer radar |
 
 ---
@@ -410,7 +410,7 @@ Protótipo completo de **triagem com IA** no hub (rotas na raiz): UX em 3 fases,
 
 ## Endpoints sugeridos
 
-### POST `/api/recrutamento/analise-aderencia`
+### POST `/api/analise-aderencia`
 
 **Auth:** Bearer  
 **Body:** `multipart/form-data`
@@ -438,7 +438,7 @@ Protótipo completo de **triagem com IA** no hub (rotas na raiz): UX em 3 fases,
 }
 ```
 
-### GET `/api/recrutamento/analise-aderencia/{jobId}`
+### GET `/api/analise-aderencia/{jobId}`
 
 **Resposta 200 (concluído):**
 

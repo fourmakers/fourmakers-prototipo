@@ -1,6 +1,6 @@
 # Métricas APP (Analytics) – Documentação Técnica e integração de dados reais
 
-Documentação para o protótipo **Métricas APP** no hub (`/analytics/metricas-app`). O UI actual usa **mocks**; este guia é o passo a passo para o dev substituir mocks por **dados reais** do Firebase Analytics/GA4 (via BigQuery ou API) e do Contentsquare.
+Documentação para o protótipo **Métricas APP** no hub (`/metricas-app`). O UI actual usa **mocks**; este guia é o passo a passo para o dev substituir mocks por **dados reais** do Firebase Analytics/GA4 (via BigQuery ou API) e do Contentsquare.
 
 - **Handoff para a equipa API (o que falta + o que informar):** [`ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md`](./ANALYTICS_METRICAS_APP_NECESSIDADES_INTEGRACAO_API.md)
 - **Criado em:** 08/05/2026
@@ -12,7 +12,7 @@ Documentação para o protótipo **Métricas APP** no hub (`/analytics/metricas-
 
 | Item | Valor |
 |------|--------|
-| **Rota** | `/analytics/metricas-app` |
+| **Rota** | `/metricas-app` |
 | **Menu** | Grupo **Analytics** → Métricas APP |
 | **Fontes na UI** | Tabs: **App — Firebase** \| **App — Contentsquare** |
 | **Dados hoje** | **Simulados por defeito**; com API: `src/analytics/api/analyticsApiClient.ts` |

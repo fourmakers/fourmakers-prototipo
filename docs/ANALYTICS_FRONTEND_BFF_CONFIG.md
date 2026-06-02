@@ -40,7 +40,7 @@ VITE_GA4_PROPERTY_ID=530562554
 ```
 
 Terminal 1: `npm run analytics-api:dev`  
-Terminal 2: `npm run dev` → http://localhost:8080/analytics/metricas-app
+Terminal 2: `npm run dev` → http://localhost:8080/metricas-app
 
 ### Exemplo — após deploy Cloud Run
 

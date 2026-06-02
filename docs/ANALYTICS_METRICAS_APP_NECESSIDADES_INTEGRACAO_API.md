@@ -4,7 +4,7 @@ Documento de **handoff** para a equipa que vai implementar a **Analytics API Fou
 
 - **Público:** dev backend, data/analytics, DevOps, PO técnico  
 - **Consumidor:** dev front do hub (`prototipo-fourmakers`)  
-- **Protótipo:** `/analytics/metricas-app`  
+- **Protótipo:** `/metricas-app`  
 - **Doc técnica do UI:** `ANALYTICS_METRICAS_APP_DOCUMENTACAO_TECNICA.md`  
 - **Criado em:** 08/05/2026  
 
@@ -325,4 +325,4 @@ VITE_ANALYTICS_API_TOKEN=<jwt-hml-se-aplicavel>
 
 ---
 
-*Quando `ANALYTICS_API_CONTRATO_BACKEND.md` e os exemplos JSON existirem, o dev front liga `VITE_ANALYTICS_USE_MOCK=false` e valida em http://localhost:8080/analytics/metricas-app.*
+*Quando `ANALYTICS_API_CONTRATO_BACKEND.md` e os exemplos JSON existirem, o dev front liga `VITE_ANALYTICS_USE_MOCK=false` e valida em http://localhost:8080/metricas-app.*

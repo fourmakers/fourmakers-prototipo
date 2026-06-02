@@ -17,7 +17,7 @@
 - **Preview:** `npm run preview:8080` — liberta a porta **8080**, depois `vite preview --port 8080 --host localhost` → URL indicada pelo CLI (**http://localhost:8080/**).
 - **Atalho:** `npm run validate:local` = build HML + preview (equivalente a `validate:hml` com host `localhost`).
 - **Lint:** `npm run lint` — corrigir erros que bloqueiem ou degradem qualidade (focar em ficheiros tocados pelo protótipo).
-- **Analytics (Métricas APP):** rota **`/prototipo/analytics/metricas-app`** — mocks por defeito; com API: `.env.local` com `VITE_ANALYTICS_API_BASE_URL` + `VITE_ANALYTICS_USE_MOCK=false` (ver `.env.example`).
+- **Analytics (Métricas APP):** rota **`/prototipo/metricas-app`** — mocks por defeito; com API: `.env.local` com `VITE_ANALYTICS_API_BASE_URL` + `VITE_ANALYTICS_USE_MOCK=false` (ver `.env.example`).
 
 ---
 
@@ -32,14 +32,14 @@
    Confirmar no output do Vite a linha **Local: http://localhost:8080/** (ou equivalente).
 6. Smoke check rápido (opcional):
    - Home: `curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/` → **200**
-   - Métricas APP: `curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/prototipo/analytics/metricas-app` → **200**
+   - Métricas APP: `curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/prototipo/metricas-app` → **200**
 
 **URLs locais úteis**
 
 | Página | URL |
 |--------|-----|
 | Hub (início) | http://localhost:8080/ |
-| Métricas APP (Firebase / Contentsquare) | http://localhost:8080/prototipo/analytics/metricas-app |
+| Métricas APP (Firebase / Contentsquare) | http://localhost:8080/prototipo/metricas-app |
 
 ---
 
@@ -61,7 +61,7 @@
 ## Output esperado
 
 - Confirmar **build concluído com sucesso**.
-- Indicar que o **preview** está a correr em **http://localhost:8080/** e, se aplicável, **http://localhost:8080/prototipo/analytics/metricas-app** (ou explicar bloqueio concreto).
+- Indicar que o **preview** está a correr em **http://localhost:8080/** e, se aplicável, **http://localhost:8080/prototipo/metricas-app** (ou explicar bloqueio concreto).
 - Resumir em **uma frase** o que foi corrigido (se houve commits mentais / ficheiros alterados).
 
 ---

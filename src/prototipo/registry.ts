@@ -15,13 +15,13 @@ export const MENU_GROUP_LABELS: Record<PrototipoMenuGroup, string> = {
 
 /**
  * Registro de protótipos (rotas na raiz do app, sem prefixo `/prototipo/`).
- * URL publicada: `{base}/fourmakers-prototipo/{routeSlug}` (ex.: `/recrutamento/analise-aderencia`).
+ * URL publicada: `{base}/fourmakers-prototipo/{routeSlug}` (ex.: `/analise-aderencia`).
  * Novo protótipo: crie a página, importe aqui e adicione um item — menu e cards da home atualizam automaticamente.
  */
 export interface PrototipoRegistryEntry {
   /** Identificador estável (rota e chave React) */
   id: string;
-  /** Caminho completo, ex.: `/minha-feature` ou `/recrutamento/minha-feature` */
+  /** Caminho completo na raiz, ex.: `/minha-feature` */
   path: string;
   /** Grupo no menu (Protótipos ou Analytics) */
   menuGroup: PrototipoMenuGroup;
@@ -67,37 +67,37 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   },
   {
     id: "analise-aderencia",
-    path: "/recrutamento/analise-aderencia",
+    path: "/analise-aderencia",
     menuGroup: "prototipos",
     menuLabel: "Análise de aderência",
     cardTitle: "Análise de aderência",
     cardDescription:
       "Triagem com IA: upload de CV/ZIP/LinkedIn, panorama da vaga, ranking e parecer visual (radar, critérios, PDI e trajetória).",
-    routeSlug: "recrutamento/analise-aderencia",
+    routeSlug: "analise-aderencia",
     documentationMarkdownFile: "ANALISE_ADERENCIA_DOCUMENTACAO_TECNICA.md",
     Component: AnaliseAderenciaPage,
   },
   {
     id: "abertura-vaga-substituicao",
-    path: "/recrutamento/abertura-vaga-substituicao",
+    path: "/abertura-vaga-substituicao",
     menuGroup: "prototipos",
     menuLabel: "Abertura de vaga — substituição",
     cardTitle: "Abertura de vaga — substituição",
     cardDescription:
       "Etapa Contexto do formulário de abertura: origem da vaga, motivo de saída e colaborador substituído com cálculo de período de experiência (90 dias).",
-    routeSlug: "recrutamento/abertura-vaga-substituicao",
+    routeSlug: "abertura-vaga-substituicao",
     documentationMarkdownFile: "ABERTURA_VAGA_SUBSTITUICAO_DOCUMENTACAO_TECNICA.md",
     Component: AberturaVagaSubstituicaoPage,
   },
   {
     id: "analytics-metricas-app",
-    path: "/analytics/metricas-app",
+    path: "/metricas-app",
     menuGroup: "analytics",
     menuLabel: "Métricas APP",
     cardTitle: "Métricas APP",
     cardDescription:
       "Dashboards App — Firebase Analytics (GA4/BigQuery) e Contentsquare (replay, fricção, jornadas) com seletor e filtros; base para comparativo Web.",
-    routeSlug: "analytics/metricas-app",
+    routeSlug: "metricas-app",
     documentationMarkdownFile: "ANALYTICS_METRICAS_APP_DOCUMENTACAO_TECNICA.md",
     Component: AnalyticsMetricasAppPage,
   },

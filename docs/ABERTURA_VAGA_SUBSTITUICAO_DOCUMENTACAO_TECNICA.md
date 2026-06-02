@@ -1,6 +1,6 @@
 # Abertura de vaga — Seleção de colaborador substituído
 
-**Protótipo:** `/recrutamento/abertura-vaga-substituicao`  
+**Protótipo:** `/abertura-vaga-substituicao`  
 **Módulo:** Recrutamento · Etapa 1 (Contexto)
 
 ## Objetivo

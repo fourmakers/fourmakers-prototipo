@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PrototipoHomePage } from "@/prototipo/pages/PrototipoHomePage";
+import { getLegacyRouteRedirects } from "@/prototipo/legacyRoutes";
 import { PROTOTIPO_REGISTRY } from "@/prototipo/registry";
 import NotFound from "@/pages/NotFound";
 
@@ -29,12 +30,8 @@ const App = () => (
             {PROTOTIPO_REGISTRY.map((entry) => (
               <Route key={entry.id} path={entry.path} element={<entry.Component />} />
             ))}
-            {PROTOTIPO_REGISTRY.map((entry) => (
-              <Route
-                key={`legacy-${entry.id}`}
-                path={`/prototipo${entry.path}`}
-                element={<Navigate to={entry.path} replace />}
-              />
+            {getLegacyRouteRedirects().map(({ from, to }) => (
+              <Route key={`legacy-${from}`} path={from} element={<Navigate to={to} replace />} />
             ))}
             <Route path="*" element={<NotFound />} />
           </Route>

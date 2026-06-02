@@ -128,7 +128,7 @@ VITE_ANALYTICS_API_TOKEN=<jwt-hml-se-aplicavel>
 
 ```bash
 npm run dev
-# Abrir http://localhost:8080/analytics/metricas-app
+# Abrir http://localhost:8080/metricas-app
 # Badge esperado: "Analytics API"
 ```
 
