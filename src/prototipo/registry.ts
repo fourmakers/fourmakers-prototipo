@@ -3,6 +3,7 @@ import { AgenteAutodescobertaPage } from "@/prototipo/pages/AgenteAutodescoberta
 import { DashboardComercialQualidadeBasePage } from "@/prototipo/dashboard-comercial/DashboardComercialQualidadeBasePage";
 import { AnalyticsMetricasAppPage } from "@/prototipo/pages/AnalyticsMetricasAppPage";
 import { AberturaVagaSubstituicaoPage } from "@/prototipo/pages/AberturaVagaSubstituicaoPage";
+import { AnaliseAderenciaPage } from "@/prototipo/pages/AnaliseAderenciaPage";
 
 /** Grupo no menu lateral e na home */
 export type PrototipoMenuGroup = "prototipos" | "analytics";
@@ -62,6 +63,18 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
     routeSlug: "dashboard-comercial",
     documentationMarkdownFile: "DASHBOARD_COMERCIAL_DOCUMENTACAO_TECNICA.md",
     Component: DashboardComercialQualidadeBasePage,
+  },
+  {
+    id: "analise-aderencia",
+    path: "/prototipo/recrutamento/analise-aderencia",
+    menuGroup: "prototipos",
+    menuLabel: "Análise de aderência",
+    cardTitle: "Análise de aderência",
+    cardDescription:
+      "Triagem com IA: upload de CV/ZIP/LinkedIn, panorama da vaga, ranking e parecer visual (radar, critérios, PDI e trajetória).",
+    routeSlug: "recrutamento/analise-aderencia",
+    documentationMarkdownFile: "ANALISE_ADERENCIA_DOCUMENTACAO_TECNICA.md",
+    Component: AnaliseAderenciaPage,
   },
   {
     id: "abertura-vaga-substituicao",
