@@ -3,7 +3,7 @@
 Documentação **multi-audiência** do protótipo **Assistente de criação de vaga** no hub Fourmakers: otimização de vagas com IA (formulário guiado ou prompt), geração de contexto, desafios, critérios de aderência, anti-churn, preview público editável e encadeamento para **Análise de aderência**.
 
 **Criado em:** 02/06/2026  
-**Última atualização:** 02/06/2026 — feature completa com mocks, preview publicável, scroll de confirmação e documentação para deploy.
+**Última atualização:** 02/06/2026 — backlog de agentes e skills (time IA): pipeline, contratos de entrada/saída e priorização P0–P2.
 
 **Estado:** protótipo front com mocks; integração API .NET 8 **pendente**.
 
@@ -20,6 +20,7 @@ Documentação **multi-audiência** do protótipo **Assistente de criação de v
 | **QA** | §8, §9 | Casos manuais e `data-testid` |
 | **UX / Design** | §5 | DS, drawer preview, tabs |
 | **IA (RAG)** | §10 | Chunks e sinónimos |
+| **Time IA / Agentes** | **§14**, §7, Sugestões integração | Backlog de agentes, skills, I/O estruturado |
 
 ---
 
@@ -222,6 +223,291 @@ Métricas futuras: % vagas otimizadas via prompt vs form; score médio; cliques 
 - Paginação server-side de talentos similares no preview.
 - `data-testid` nos componentes (hoje sugeridos apenas na doc).
 - Testes E2E Playwright.
+- Implementar agentes §14 (substituir mocks).
+
+---
+
+## §14. Backlog de agentes e skills (time IA)
+
+Secção **obrigatória para o time de IA Fourmakers**: catálogo de agentes sugeridos para substituir mocks e orquestrar o fluxo de **criação/otimização de vaga** com retorno **JSON tipado**, versionável e escalável (jobs assíncronos + polling).
+
+### 14.1 Princípios de arquitetura
+
+| Princípio | Descrição |
+|-----------|-----------|
+| **Orquestrador único** | Um agente coordena o pipeline; agentes especializados são **tools/skills** invocáveis. |
+| **Saída estruturada** | Cada agente devolve JSON validado por schema (JSON Schema / Pydantic / contrato C#). |
+| **Idempotência** | `jobId` + `vagaRascunhoId` para reprocessamento e auditoria. |
+| **Rastreabilidade** | `traceId`, `agentId`, `versaoPrompt`, `dataCriacao` em cada etapa. |
+| **Envelope HTTP** | API .NET expõe envelope padrão; agentes comunicam via serviço interno ou fila. |
+
+```mermaid
+flowchart LR
+  UI[Front /criacao-vaga-assistente] --> API[POST otimizar]
+  API --> ORQ[Orquestrador Vaga]
+  ORQ --> A1[Contexto Cliente]
+  ORQ --> A2[Contexto Gestor]
+  ORQ --> A3[Mercado]
+  ORQ --> A4[Desafios]
+  ORQ --> A5[Critérios Match]
+  ORQ --> A6[Anti-churn]
+  ORQ --> A7[Skills + Hierarquia]
+  ORQ --> A8[Redator LinkedIn]
+  ORQ --> CONS[Consolidador VagaOtimizada]
+  CONS --> API
+  UI --> PREV[POST preview-mercado]
+  PREV --> A9[Projeção Banco Talentos]
+```
+
+### 14.2 Catálogo de agentes (resumo)
+
+| ID | Agente | Prioridade | Etapa UI |
+|----|--------|------------|----------|
+| `vaga-orquestrador` | Orquestrador de otimização de vaga | **P0** | Processamento |
+| `vaga-contexto-cliente` | Analista de contexto do cliente | **P0** | Resultado — contexto cliente |
+| `vaga-contexto-gestor` | Analista de perfil do gestor | **P0** | Resultado — contexto gestor |
+| `vaga-mercado` | Analista de momento de mercado | **P1** | Resultado — mercado |
+| `vaga-desafios` | Estruturador de desafios da posição | **P0** | Desafios + texto consolidado |
+| `vaga-criterios-match` | Definidor de critérios de aderência | **P0** | Tabela ≥6 critérios |
+| `vaga-anti-churn` | Consultor anti-churn / retenção | **P1** | Secção anti-churn |
+| `vaga-skills-hierarquia` | Curador de skills e pesos de match | **P1** | Skills + hierarquia 40/35/25 |
+| `vaga-redator-publico` | Redator vaga pública (LinkedIn) | **P1** | Preview — descrição |
+| `vaga-preview-mercado` | Projeção banco de talentos | **P2** | KPIs preview |
+| `vaga-validador-publicacao` | Validador pré-publicação | **P2** | Publicar vaga |
+
+### 14.3 Skills transversais (biblioteca)
+
+| Skill ID | Nome | Uso |
+|----------|------|-----|
+| `skill-llm-estruturado` | LLM com output JSON schema | Todos os agentes de texto |
+| `skill-rag-cliente` | RAG cadastro cliente + histórico vagas | Contexto cliente |
+| `skill-rag-gestor` | RAG perfil gestor + vagas fechadas | Contexto gestor |
+| `skill-rag-mercado` | RAG benchmarks salário/oferta (org ou externo) | Mercado + preview |
+| `skill-taxonomia-skills` | Ontologia hard/soft skills Fourmakers | Skills sugeridas |
+| `skill-match-framework` | Framework Desafio/Match (pesos 40/35/25) | Critérios + hierarquia |
+| `skill-pii-mascara` | Mascaramento PII em logs | Pipeline inteiro |
+| `skill-versao-contrato` | Validação schema v1/v2 | Saída de cada agente |
+
+### 14.4 Detalhamento por agente
+
+#### `vaga-orquestrador` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Receber entrada (form/prompt), invocar agentes em DAG, consolidar `VagaOtimizadaResultado`, calcular `scoreQualidade`. |
+| **Skills** | `skill-llm-estruturado`, orquestração workflow, retry/timeout |
+| **Invocação** | Interno (worker) após `POST /api/recrutamento/vagas/otimizar` |
+
+**Entrada:**
+
+```json
+{
+  "jobId": "job-vaga-001",
+  "modoEntrada": "prompt",
+  "clienteId": "cli-onesys",
+  "gestorId": "gest-carlos",
+  "tituloVaga": null,
+  "modeloTrabalho": null,
+  "contextoBreve": null,
+  "promptTexto": "…",
+  "orgId": "org-fourmakers"
+}
+```
+
+**Saída:** objeto completo `VagaOtimizadaDto` (ver §11) + metadados:
+
+```json
+{
+  "vagaRascunhoId": "v-draft-8821",
+  "scoreQualidade": 91,
+  "agentTrace": [{ "agentId": "vaga-contexto-cliente", "duracaoMs": 1200 }],
+  "dataCriacao": "2026-06-02T18:00:00Z"
+}
+```
+
+---
+
+#### `vaga-contexto-cliente` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Sintetizar contexto organizacional do cliente (squads, pressões, setor, compliance). |
+| **Skills** | `skill-rag-cliente`, `skill-llm-estruturado` |
+
+**Entrada:** `{ "clienteId", "orgId", "promptTexto?", "contextoBreve?" }`  
+**Saída:** `{ "contextoCliente": "string", "confianca": 0.0-1.0, "fontes": ["crm", "rag"] }`
+
+---
+
+#### `vaga-contexto-gestor` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Perfil de expectativa do gestor, histórico de contratações, fit cultural. |
+| **Skills** | `skill-rag-gestor`, `skill-llm-estruturado` |
+
+**Entrada:** `{ "gestorId", "clienteId", "tituloVaga?" }`  
+**Saída:** `{ "contextoGestor": "string", "sinaisRetencao": ["…"], "confianca": 0.92 }`
+
+---
+
+#### `vaga-mercado` (P1)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Momento de mercado, faixa salarial indicativa, escassez de perfil. |
+| **Skills** | `skill-rag-mercado`, `skill-llm-estruturado` |
+
+**Entrada:** `{ "tituloSugerido", "clienteId", "modeloTrabalho", "skillsSugeridas[]?" }`  
+**Saída:** `{ "momentoMercado": "string", "faixaSalarialReferencia?": "string" }`
+
+---
+
+#### `vaga-desafios` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Lista 5–8 desafios acionáveis + `textoDesafioConsolidado` para vaga pública. |
+| **Skills** | `skill-match-framework`, `skill-llm-estruturado` |
+
+**Entrada:** contextos cliente/gestor + prompt/form  
+**Saída:**
+
+```json
+{
+  "desafios": ["Governar design system…", "…"],
+  "objetivos": ["Entregar em 90 dias…"],
+  "textoDesafioConsolidado": "A posição em…"
+}
+```
+
+---
+
+#### `vaga-criterios-match` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Gerar **≥6** critérios com `id`, `nome`, `peso` (1–5), `desafioVaga`, `evidenciaEsperada` — insumo direto da **Análise de aderência**. |
+| **Skills** | `skill-match-framework`, `skill-llm-estruturado` |
+
+**Saída:**
+
+```json
+{
+  "criteriosAderencia": [
+    {
+      "id": "ds",
+      "nome": "Sistemas de Design",
+      "peso": 5,
+      "desafioVaga": "Governar DS multi-squad",
+      "evidenciaEsperada": "Cases de governança"
+    }
+  ]
+}
+```
+
+---
+
+#### `vaga-anti-churn` (P1)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Recomendações de triagem e retenção (12 meses), alertas de perfil de risco. |
+| **Skills** | `skill-rag-gestor`, histórico churn plataforma, `skill-llm-estruturado` |
+
+**Saída:** `{ "antiChurn": ["…"], "pdiOrganizacional?": "string" }`
+
+---
+
+#### `vaga-skills-hierarquia` (P1)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Skills hard/soft com nível e flag `relevante`; hierarquia de pesos (soma 100%). |
+| **Skills** | `skill-taxonomia-skills`, `skill-match-framework` |
+
+**Saída:**
+
+```json
+{
+  "skillsSugeridas": [{ "nome": "Design System", "tipo": "hard", "relevante": true, "nivel": "Avançado" }],
+  "hierarquiaMatch": [
+    { "label": "Desafio da vaga", "peso": 40, "descricao": "…" }
+  ],
+  "insightsTriagem": ["Priorize candidatos com…"]
+}
+```
+
+---
+
+#### `vaga-redator-publico` (P1)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Gerar `descricaoLinkedin` (formato seções About/Responsibilities/Requirements). |
+| **Skills** | `skill-llm-estruturado`, template LinkedIn |
+
+**Entrada:** `VagaOtimizada` parcial (título, desafios, skills, localização)  
+**Saída:** `{ "descricaoLinkedin": "string", "tituloSugerido?": "string" }`
+
+---
+
+#### `vaga-preview-mercado` (P2)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | KPIs: `mediaAderenciaPrevista`, `talentosBancoAcima80`, `talentosQualificadosSimilares`. |
+| **Skills** | `skill-rag-mercado`, motor de scoring banco talentos (SQL/vector) |
+
+**Endpoint dedicado:** `POST /api/recrutamento/vagas/{vagaRascunhoId}/preview-mercado`  
+**Entrada:** campos editados no preview (título, descrição, desafios)  
+**Saída:** `PreviewMercadoVaga` (ver §11)
+
+---
+
+#### `vaga-validador-publicacao` (P2)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Checklist: critérios ≥6, desafio consolidado, campos obrigatórios; bloqueia publicação se inválido. |
+| **Skills** | validação schema, regras negócio |
+
+**Saída:** `{ "aptoPublicar": true, "erros": [] }`
+
+### 14.5 Mapeamento agente → endpoint .NET
+
+| Endpoint | Agentes envolvidos |
+|----------|-------------------|
+| `POST …/vagas/otimizar` | Orquestrador + P0/P1 (DAG completo) |
+| `POST …/vagas/{id}/preview-mercado` | `vaga-preview-mercado` (+ re-score leve) |
+| `POST …/vagas/{id}/publicar` | `vaga-validador-publicacao` + persistência |
+
+### 14.6 Backlog sugerido (sprints)
+
+| Sprint | Entrega |
+|--------|---------|
+| **S1** | P0: orquestrador, contexto cliente/gestor, desafios, critérios |
+| **S2** | P1: mercado, anti-churn, skills/hierarquia, redator LinkedIn |
+| **S3** | P2: preview mercado real + validador publicação |
+| **S4** | Observabilidade, feedback humano, versionamento prompts |
+
+### 14.7 Contrato C# — metadados de agente (sugerido)
+
+```csharp
+public sealed class AgentExecutionTraceDto
+{
+    public string AgentId { get; set; }
+    public string Versao { get; set; }
+    public int DuracaoMs { get; set; }
+    public double Confianca { get; set; }
+}
+
+public sealed class VagaOtimizadaAgentPayloadDto
+{
+    public VagaOtimizadaDto Resultado { get; set; }
+    public List<AgentExecutionTraceDto> AgentTrace { get; set; }
+}
+```
 
 ---
 
@@ -230,7 +516,7 @@ Métricas futuras: % vagas otimizadas via prompt vs form; score médio; cliques 
 - `PROTOTIPACAO.md` — hub e registo de rotas
 - `public/design-toolkit.md` — DS e tokens
 - `docs/ORIENTACAO_DOCUMENTACAO_TECNICA_PROTOTIPOS_EXTERNOS.md`
-- `docs/ANALISE_ADERENCIA_DOCUMENTACAO_TECNICA.md` — fluxo downstream
+- `docs/ANALISE_ADERENCIA_DOCUMENTACAO_TECNICA.md` — fluxo downstream (§14 agentes de triagem)
 - Código: `src/prototipo/criacao-vaga-assistente/`, `src/prototipo/pages/CriacaoVagaAssistentePage.tsx`
 
 ---
@@ -382,7 +668,7 @@ Todas marcadas **(sugerido)** — ver secção **Sugestões para integração**.
 
 ## 16. Resumo para o time
 
-Protótipo navegável em `/criacao-vaga-assistente` com mocks; documentação pronta para backend implementar `otimizar` e `publicar` com envelope padrão; encadear com Análise de aderência.
+Protótipo navegável em `/criacao-vaga-assistente` com mocks; documentação pronta para backend implementar `otimizar` e `publicar` com envelope padrão; encadear com Análise de aderência. **Backlog de agentes:** ver **§14** (11 agentes + skills RAG cliente/gestor, match e redação LinkedIn).
 
 ## 17. Rodapé
 

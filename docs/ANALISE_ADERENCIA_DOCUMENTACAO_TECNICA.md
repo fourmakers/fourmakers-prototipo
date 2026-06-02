@@ -3,7 +3,7 @@
 Documentação **multi-audiência** do protótipo **Análise de aderência** no hub Fourmakers: triagem inicial de candidatos com IA, panorama de vaga/mercado, ranking de aderência, parecer por critérios, **Radar profissional** e ranking pocket flutuante.
 
 **Criado em:** 27/05/2026  
-**Última atualização:** 02/06/2026 — rotas sem prefixo `/prototipo/` (ex.: `/analise-aderencia`); redirect das URLs legadas.
+**Última atualização:** 02/06/2026 — backlog de agentes e skills (time IA): ingestão CV, scoring, parecer e radar; contratos I/O e priorização P0–P2.
 
 **Estado:** protótipo front com mocks; integração API .NET 8 **pendente**.
 
@@ -20,6 +20,7 @@ Documentação **multi-audiência** do protótipo **Análise de aderência** no 
 | **QA** | §8, §9 | Casos manuais e `data-testid` futuros |
 | **UX / Design** | §5 | DS, layout duas colunas, drawer |
 | **IA (RAG)** | §10 | Chunks e sinónimos |
+| **Time IA / Agentes** | **§14**, §7, Sugestões integração | Backlog de agentes, skills, I/O estruturado |
 
 ---
 
@@ -220,6 +221,321 @@ Resumo:
 - `data-testid` nos componentes.
 - Upload com limite de tamanho e antivírus (backend).
 - Internacionalização PT/EN se necessário.
+- Implementar agentes §14 (substituir mocks).
+
+---
+
+## §14. Backlog de agentes e skills (time IA)
+
+Catálogo de agentes para o pipeline de **Análise de aderência**: ingestão de CVs (PDF/ZIP), extração estruturada, scoring por critérios da vaga, ranking, parecer individual e **Radar profissional**. Saídas alinhadas a `ResultadoAnaliseAderencia` e `RadarProfissional` (`types.ts`).
+
+### 14.1 Princípios de arquitetura
+
+| Princípio | Descrição |
+|-----------|-----------|
+| **Job assíncrono** | `POST` retorna `jobId`; polling `GET …/{jobId}` até `status: completed`. |
+| **Pipeline por candidato** | Extração → enriquecimento → scoring → parecer; paralelizável por lote. |
+| **Critérios da vaga** | Input obrigatório: desafios + `criteriosAderencia` vindos da vaga otimizada (Assistente criação). |
+| **Confiança** | Cada extração devolve `confianca` e flags (`ilegivel`, `idiomaNaoSuportado`). |
+| **Envelope + trace** | Mesmo padrão camelCase; `agentTrace[]` por candidato ou por job. |
+
+```mermaid
+flowchart TB
+  UI[Front /analise-aderencia] --> API[POST analise-aderencia]
+  API --> ORQ[Orquestrador Análise]
+  ORQ --> ING[Ingestão Documentos]
+  ING --> EXT[Extração CV]
+  EXT --> ENR[Enriquecimento LinkedIn]
+  ORQ --> PAN[Panorama Vaga/Mercado]
+  EXT --> SCR[Scoring por Critério]
+  SCR --> RNK[Ranking Lote]
+  RNK --> PAREC[Parecer Candidato]
+  PAREC --> API
+  UI --> RAD[GET radar-profissional]
+  RAD --> ARAD[Agente Radar Plataforma]
+```
+
+### 14.2 Catálogo de agentes (resumo)
+
+| ID | Agente | Prioridade | Etapa UI |
+|----|--------|------------|----------|
+| `aderencia-orquestrador` | Orquestrador de análise de lote | **P0** | Processamento |
+| `aderencia-ingestao-docs` | Ingestão e normalização de ficheiros | **P0** | Upload |
+| `aderencia-extracao-cv` | Leitor/extrator de CV (PDF/DOC) | **P0** | Pré-scoring |
+| `aderencia-extracao-zip` | Descompactar e fan-out ZIP | **P1** | Entrada ZIP |
+| `aderencia-linkedin` | Enriquecimento perfil LinkedIn | **P1** | Entrada URL |
+| `aderencia-panorama` | Panorama vaga + mercado do lote | **P0** | Coluna panorama |
+| `aderencia-scoring-criterio` | Avaliador por critério (0–5) | **P0** | Parecer / radar |
+| `aderencia-consolidador-ranking` | Ranking e % aderência geral | **P0** | Ranking 10 |
+| `aderencia-parecer` | Parecer, gaps, PDI, trajetória | **P0** | Parecer candidato |
+| `aderencia-radar-plataforma` | Radar profissional (histórico org) | **P1** | Drawer radar |
+| `aderencia-potencial` | Classificador alto/médio/em desenvolvimento | **P2** | Selo ranking |
+
+### 14.3 Skills transversais (biblioteca)
+
+| Skill ID | Nome | Uso |
+|----------|------|-----|
+| `skill-doc-pdf-ocr` | OCR + parsing PDF nativo/digitalizado | Extração CV |
+| `skill-doc-docx` | Leitura DOC/DOCX | Extração CV |
+| `skill-doc-zip` | Listar e extrair ZIP com limite | Ingestão lote |
+| `skill-ner-cv` | NER: nome, cargo, skills, experiências | Extração estruturada |
+| `skill-llm-estruturado` | LLM output JSON schema | Scoring, parecer, panorama |
+| `skill-rag-vaga` | RAG desafios/critérios da vaga | Scoring |
+| `skill-rag-candidato-plataforma` | Histórico inscrições, avaliações, gamificação | Radar |
+| `skill-linkedin-enrich` | API/scrape LinkedIn (compliance) | URL LinkedIn |
+| `skill-match-calculo` | Fórmula aderência % (pesos critérios) | Ranking |
+| `skill-pii-lgpd` | Mascaramento, retenção, consentimento | Pipeline |
+
+### 14.4 Detalhamento por agente
+
+#### `aderencia-orquestrador` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Criar job, paralelizar candidatos, agregar `panorama` + `candidatos[]`, persistir `dataCriacao`. |
+| **Skills** | fila (SQS/Rabbit), workflow, `skill-pii-lgpd` |
+
+**Entrada:**
+
+```json
+{
+  "jobId": "job-ad-001",
+  "vagaId": "v692",
+  "orgId": "org-fourmakers",
+  "criteriosVaga": [{ "id": "ds", "nome": "Sistemas de Design", "peso": 5, "desafioVaga": "…", "evidenciaEsperada": "…" }],
+  "desafiosVaga": ["Governar design system…"],
+  "fontes": [
+    { "tipo": "arquivo", "storageKey": "uploads/cv-1.pdf" },
+    { "tipo": "linkedin", "url": "https://linkedin.com/in/…" }
+  ]
+}
+```
+
+**Saída (job completo):** `ResultadoAnaliseAderenciaDto` + `status: "completed"`.
+
+---
+
+#### `aderencia-ingestao-docs` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Validar MIME, tamanho, antivírus; gerar `storageKey`; fan-out ZIP. |
+| **Skills** | `skill-doc-zip`, validação MIME, antivírus |
+
+**Saída:**
+
+```json
+{
+  "documentos": [
+    { "documentoId": "doc-1", "storageKey": "…", "nomeArquivo": "rafael.pdf", "mimeType": "application/pdf", "status": "ready" }
+  ],
+  "erros": []
+}
+```
+
+---
+
+#### `aderencia-extracao-cv` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Ler PDF/DOC; extrair perfil estruturado para scoring. |
+| **Skills** | `skill-doc-pdf-ocr`, `skill-doc-docx`, `skill-ner-cv`, `skill-llm-estruturado` |
+
+**Entrada:** `{ "documentoId", "storageKey", "idiomaPreferido": "pt-BR" }`  
+
+**Saída:**
+
+```json
+{
+  "candidatoExtracaoId": "ext-1",
+  "nome": "Rafael Mendes",
+  "cargoAtual": "Senior UX/UI Designer",
+  "resumoBruto": "…",
+  "experiencias": [{ "empresa": "…", "cargo": "…", "periodo": "2020–2024" }],
+  "skillsExtraidas": ["Figma", "Design System"],
+  "confianca": 0.88,
+  "flags": []
+}
+```
+
+**Erro estruturado:** `{ "flags": ["ilegivel"], "confianca": 0.2, "mensagem": "PDF sem texto extraível" }`
+
+---
+
+#### `aderencia-linkedin` (P1)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Complementar extração com dados públicos LinkedIn. |
+| **Skills** | `skill-linkedin-enrich`, `skill-pii-lgpd` |
+
+**Entrada:** `{ "url", "candidatoExtracaoId?" }`  
+**Saída:** `{ "perfilLinkedin": { "headline", "conexoesGestor?": false }, "confianca": 0.75 }`
+
+---
+
+#### `aderencia-panorama` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Gerar `PanoramaVaga` para o lote (mercado + cliente + insights). |
+| **Skills** | `skill-rag-vaga`, `skill-rag-mercado`, `skill-llm-estruturado` |
+
+**Saída:**
+
+```json
+{
+  "panorama": {
+    "contextoMercado": "…",
+    "contextoCliente": "…",
+    "insightsTriagem": ["Priorize…"],
+    "momentoMercado": "…"
+  }
+}
+```
+
+---
+
+#### `aderencia-scoring-criterio` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Para cada critério da vaga: nota 0–5, `comoCumpre`, `gap`, `pdi`, `complementoIa`. |
+| **Skills** | `skill-match-framework`, `skill-rag-vaga`, `skill-llm-estruturado` |
+
+**Entrada:** `{ "candidatoExtracao", "criterio": { "id", "nome", "desafioVaga", "evidenciaEsperada" } }`  
+
+**Saída:**
+
+```json
+{
+  "criterios": [
+    {
+      "id": "ds",
+      "nome": "Sistemas de Design",
+      "nota": 5,
+      "maxNota": 5,
+      "desafioVaga": "Governar DS multi-squad",
+      "comoCumpre": "Liderou DS em 3 squads…",
+      "gap": null,
+      "pdi": null,
+      "complementoIa": "Evidência forte em case X"
+    }
+  ]
+}
+```
+
+---
+
+#### `aderencia-consolidador-ranking` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Calcular `aderenciaGeral` (0–100), ordenar `ranking`, gerar `resumo` curto. |
+| **Skills** | `skill-match-calculo`, `skill-llm-estruturado` |
+
+**Saída:**
+
+```json
+{
+  "candidatos": [
+    {
+      "id": "c1",
+      "aderenciaGeral": 88,
+      "ranking": 1,
+      "resumo": "Perfil sênior com DS e a11y…",
+      "potencial": "alto"
+    }
+  ]
+}
+```
+
+---
+
+#### `aderencia-parecer` (P0)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Consolidar parecer narrativo + `trajetoria` (fases 0–90, 90–180 dias). |
+| **Skills** | `skill-llm-estruturado`, `skill-match-framework` |
+
+**Saída:** complementa candidato com `trajetoria: [{ "fase", "descricao" }]` (UI radar Recharts usa critérios do passo anterior).
+
+---
+
+#### `aderencia-radar-plataforma` (P1)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Agregar histórico Fourmakers: inscrições, avaliações, gamificação, relações org, alertas. |
+| **Skills** | `skill-rag-candidato-plataforma`, SQL/API interna |
+
+**Endpoint:** `GET /api/recrutamento/candidatos/{codigoInternoColaborador}/radar-profissional?vagaId=`  
+
+**Entrada:** `{ "codigoInternoColaborador", "vagaId", "gestorId?" }`  
+**Saída:** objeto `RadarProfissional` (perfil, kpis, inscricoes, relacoesOrg, alertas, gamificacao, bloqueios).
+
+---
+
+#### `aderencia-potencial` (P2)
+
+| Campo | Valor |
+|-------|--------|
+| **Responsabilidade** | Classificar `alto` \| `medio` \| `em_desenvolvimento` com base em aderência + gaps + histórico. |
+| **Skills** | regras + ML leve opcional |
+
+**Saída:** `{ "potencial": "alto", "justificativa": "…" }`
+
+### 14.5 Encadeamento com Assistente de criação de vaga
+
+| Dado da vaga publicada | Consumido por |
+|------------------------|---------------|
+| `criteriosAderencia[]` | `aderencia-scoring-criterio` |
+| `desafios[]` | `aderencia-panorama`, scoring |
+| `textoDesafioConsolidado` | Contexto LLM parecer |
+| `hierarquiaMatch` | Peso no `skill-match-calculo` |
+
+Sem vaga otimizada: orquestrador pode usar critérios genéricos (degradar `confianca` — flag na UI).
+
+### 14.6 Mapeamento agente → endpoint .NET
+
+| Endpoint | Agentes |
+|----------|---------|
+| `POST /api/analise-aderencia` | Orquestrador + ingestão + pipeline por candidato |
+| `GET /api/analise-aderencia/{jobId}` | Estado + resultado agregado |
+| `GET …/radar-profissional` | `aderencia-radar-plataforma` |
+
+### 14.7 Backlog sugerido (sprints)
+
+| Sprint | Entrega |
+|--------|---------|
+| **S1** | P0: ingestão, extração CV, panorama, scoring, ranking |
+| **S2** | P0: parecer + trajetória; job async + polling |
+| **S3** | P1: LinkedIn, ZIP fan-out, radar plataforma |
+| **S4** | P2: potencial, feedback recrutador, retreino |
+
+### 14.8 Contrato C# — job e trace (sugerido)
+
+```csharp
+public sealed class AnaliseAderenciaJobDto
+{
+    public string JobId { get; set; }
+    public string Status { get; set; } // processing | completed | failed
+    public DateTime DataCriacao { get; set; }
+    public ResultadoAnaliseAderenciaDto Resultado { get; set; }
+    public List<AgentExecutionTraceDto> AgentTrace { get; set; }
+}
+
+public sealed class CandidatoExtracaoDto
+{
+    public string CandidatoExtracaoId { get; set; }
+    public string Nome { get; set; }
+    public string CargoAtual { get; set; }
+    public double Confianca { get; set; }
+    public List<string> Flags { get; set; }
+}
+```
 
 ---
 
@@ -396,7 +712,7 @@ Ver `src/prototipo/analise-aderencia/types.ts` (perfil, kpis, inscrições, rela
 
 ## 16. Resumo para o time
 
-Protótipo completo de **triagem com IA** no hub (rotas na raiz): UX em 3 fases, resultados em **2 colunas (2:1)**, **10 candidatos**, **pocket ranking** colapsável e **Radar profissional**. Pronto para validação de produto; backend deve expor jobs de análise, resultado tipado como `ResultadoAnaliseAderencia` e endpoint de radar com envelope padrão.
+Protótipo completo de **triagem com IA** no hub (rotas na raiz): UX em 3 fases, resultados em **2 colunas (2:1)**, **10 candidatos**, **pocket ranking** colapsável e **Radar profissional**. Pronto para validação de produto; backend deve expor jobs de análise, resultado tipado como `ResultadoAnaliseAderencia` e endpoint de radar com envelope padrão. **Backlog de agentes:** ver **§14** (11 agentes + skills de leitura de documentos, scoring e radar).
 
 ## 17. Rodapé
 
