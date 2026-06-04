@@ -5,6 +5,10 @@ import { DashboardComercialQualidadeBasePage } from "@/prototipo/dashboard-comer
 /**
  * Registro de protótipos sob `/prototipo/*`.
  * Novo protótipo: crie a página, importe aqui e adicione um item — menu e cards da home atualizam automaticamente.
+ *
+ * Espelho no estúdio Fourflow (fase 2): atualize também
+ * `src/features/feature-request-builder/domain/fourmakersPrototipoMirrorCatalog.ts` com os mesmos metadados
+ * (sem importar este ficheiro no bundle principal).
  */
 export interface PrototipoRegistryEntry {
   /** Identificador estável (rota e chave React) */

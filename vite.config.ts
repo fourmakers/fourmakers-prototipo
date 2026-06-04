@@ -2,10 +2,11 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
-/** Base pública (GitHub Pages project site: `/nome-do-repo/`). Definir via `VITE_BASE_PATH` no CI. */
+/** Base pública (GitHub Pages: `VITE_BASE_PATH`). Raiz do site: `VITE_BASE_PATH=/`. Sem variável: `/prototipo/` (alinhado às rotas e ao proxy do Fourflow em dev). */
 function viteBase(): string {
   const raw = process.env.VITE_BASE_PATH?.trim();
-  if (!raw || raw === "/") return "/";
+  if (raw === "/") return "/";
+  if (!raw) return "/prototipo/";
   const withLeading = raw.startsWith("/") ? raw : `/${raw}`;
   return withLeading.endsWith("/") ? withLeading : `${withLeading}/`;
 }

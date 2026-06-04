@@ -74,6 +74,9 @@ function scrollPanelIntoView(el: HTMLElement | null) {
   el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "nearest" });
 }
 
+/** Literais ARIA para validadores estáticos (axe / Edge Tools). */
+const ariaBool = (value: boolean): "true" | "false" => (value ? "true" : "false");
+
 export function DashboardComercialQualidadeBasePage() {
   const today = useMemo(() => new Date(), []);
   const defaultInicio = useMemo(() => addDays(today, -60), [today]);
@@ -191,7 +194,10 @@ export function DashboardComercialQualidadeBasePage() {
       data-testid="prototipo-dashboard-comercial-page"
     >
       <nav className="flex flex-wrap items-center gap-1 text-xs text-secondaryText" aria-label="Breadcrumb">
-        <Link to="/" className="font-medium text-primary hover:underline">
+        <Link
+          to={import.meta.env.BASE_URL === "/" ? "/" : import.meta.env.BASE_URL}
+          className="font-medium text-primary hover:underline"
+        >
           Início
         </Link>
         <ChevronRight className="size-3.5 shrink-0 opacity-50" aria-hidden />
@@ -319,7 +325,7 @@ export function DashboardComercialQualidadeBasePage() {
         <div
           role="status"
           aria-live="polite"
-          aria-busy={loading}
+          aria-busy={ariaBool(loading)}
           className="sr-only"
         >
           {loading ? "A carregar indicadores de qualidade da base." : resumo ? "Indicadores atualizados." : ""}
@@ -633,7 +639,7 @@ export function DashboardComercialQualidadeBasePage() {
                     active ? "motion-safe:scale-y-[1.15] shadow-md ring-2 ring-white/50" : "hover:opacity-90",
                     activeSem && !active && "opacity-35",
                   )}
-                  aria-pressed={active}
+                  aria-pressed={ariaBool(active)}
                   aria-label={`${labelHuman}: ${count} stakeholders`}
                 >
                   <span className="sr-only">
@@ -756,7 +762,7 @@ function KpiCard({
       type="button"
       onClick={onClick}
       data-testid={`dashboard-comercial-kpi-${kpiId}`}
-      aria-expanded={active}
+      aria-expanded={ariaBool(active)}
       aria-controls={panelDomId}
       className={cn(
         "relative flex min-h-[118px] flex-col justify-between rounded-lg p-4 text-left shadow-softToken motion-safe:transition-all",
@@ -928,7 +934,7 @@ function SemLeg({
     <button
       type="button"
       onClick={onClick}
-      aria-pressed={active}
+      aria-pressed={ariaBool(active)}
       className={cn(
         "flex items-center gap-1.5 rounded-md px-1.5 py-1 text-secondaryText transition-colors hover:bg-muted",
         active && "bg-muted font-semibold text-primaryText",

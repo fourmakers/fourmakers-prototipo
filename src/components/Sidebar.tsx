@@ -64,9 +64,13 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
   const location = useLocation();
   const navigate = useNavigate();
   const pathname = location.pathname;
+  /** Prefixo público do app (Vite `base`), sem barra final — ex.: `/prototipo` ou vazio na raiz. */
+  const hubBase = import.meta.env.BASE_URL.replace(/\/$/, "");
 
   const isPrototipoChildActive = PROTOTIPO_REGISTRY.some((e) => e.path === pathname);
-  const [prototiposExpanded, setPrototiposExpanded] = useState(() => pathname.startsWith("/prototipo"));
+  const [prototiposExpanded, setPrototiposExpanded] = useState(() =>
+    hubBase ? pathname.startsWith(hubBase) : pathname.startsWith("/prototipo")
+  );
 
   useEffect(() => {
     if (isPrototipoChildActive) setPrototiposExpanded(true);
@@ -97,12 +101,17 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
     setPrototiposExpanded((p) => !p);
   };
 
-  const inicioActive = pathname === "/";
+  const homePath = import.meta.env.BASE_URL === "/" ? "/" : import.meta.env.BASE_URL;
+  const inicioActive =
+    pathname === "/" ||
+    pathname === homePath ||
+    pathname === `${hubBase}` ||
+    pathname === `${hubBase}/`;
 
   const inicioButton = (
     <button
       type="button"
-      onClick={() => go("/")}
+      onClick={() => go(homePath)}
       className={[
         "flex items-center gap-2 w-full min-w-0 box-border rounded-pillToken text-[0.875rem] font-semibold transition-all duration-200",
         collapsed ? "justify-center py-3 px-3" : "justify-start py-3 pl-4 pr-2",
@@ -123,7 +132,7 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
     <button
       type="button"
       onClick={handlePrototiposParent}
-      aria-expanded={prototiposExpanded}
+      aria-expanded={prototiposExpanded ? 'true' : 'false'}
       className={[
         "flex items-center gap-2 w-full min-w-0 box-border rounded-pillToken text-[0.875rem] font-semibold transition-all duration-200",
         collapsed ? "justify-center py-3 px-3" : "justify-start py-3 pl-3 pr-2",
@@ -225,6 +234,7 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
                 <button
                   type="button"
                   onClick={handleLogout}
+                  aria-label="Sair"
                   className="flex items-center justify-center w-full rounded-pillToken py-3 text-[0.875rem] font-semibold text-secondaryText hover:bg-btnGhostHover hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <LogOut className="size-5 shrink-0" aria-hidden />

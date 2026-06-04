@@ -10,11 +10,13 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
-/** GitHub Pages em subpasta: `import.meta.env.BASE_URL` é `/repo/`; RR prefere basename sem barra final. */
+/** GitHub Pages em subpasta: `import.meta.env.BASE_URL` é `/repo/`; RR basename sem barra final. Com base `/prototipo/`, as rotas do registo já trazem o prefixo — não duplicar basename. */
 function routerBasename(): string | undefined {
   const base = import.meta.env.BASE_URL;
   if (base === "/" || base === "") return undefined;
-  return base.endsWith("/") ? base.slice(0, -1) : base;
+  const normalized = base.endsWith("/") ? base.slice(0, -1) : base;
+  if (normalized === "/prototipo") return undefined;
+  return normalized;
 }
 
 const App = () => (

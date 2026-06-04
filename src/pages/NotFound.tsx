@@ -13,7 +13,7 @@ const NotFound = () => {
       <h1 className="page-title mb-2">404</h1>
       <p className="page-subtitle mb-6">Página não encontrada</p>
       <Link
-        to="/"
+        to={import.meta.env.BASE_URL === "/" ? "/" : import.meta.env.BASE_URL}
         className="text-sm font-semibold text-primary underline hover:text-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
         Voltar ao início
