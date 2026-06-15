@@ -3,12 +3,11 @@ import { Briefcase, Loader2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ETAPAS = [
-  "Analisando cliente, gestor e contexto organizacional",
-  "Cruzando momento de mercado e benchmarks de retenção",
-  "Gerando desafios e objetivos mensuráveis da posição",
-  "Definindo critérios de match (aderência + anti-churn)",
-  "Montando hierarquia de pesos e skills imprescindíveis",
-  "Consolidando vaga otimizada para triagem",
+  "Interpretando prompt e contexto do cliente",
+  "Extraindo perfil e competências do texto",
+  "Propondo skills complementares",
+  "Validando completude do perfil de atuação",
+  "Preparando preview para refinamento",
 ];
 
 interface ProcessamentoOtimizacaoVagaProps {
@@ -27,9 +26,9 @@ export function ProcessamentoOtimizacaoVaga({ onComplete }: ProcessamentoOtimiza
           if (cancelled) return;
           setEtapaAtiva(i);
           if (i === ETAPAS.length - 1) {
-            timers.push(setTimeout(() => !cancelled && onComplete(), 900));
+            timers.push(setTimeout(() => !cancelled && onComplete(), 700));
           }
-        }, (i + 1) * 1000),
+        }, (i + 1) * 800),
       );
     });
     return () => {
@@ -43,9 +42,9 @@ export function ProcessamentoOtimizacaoVaga({ onComplete }: ProcessamentoOtimiza
       <div className="analise-pulse-ring relative mb-8 flex size-20 items-center justify-center rounded-full analise-brand-gradient shadow-[0_0_40px_rgba(154,27,255,0.35)]">
         <Briefcase className="size-9 text-white" aria-hidden />
       </div>
-      <h2 className="analise-brand-gradient-text text-xl font-bold">Otimizando vaga com IA</h2>
+      <h2 className="analise-brand-gradient-text text-xl font-bold">Gerando perfil com IA</h2>
       <p className="mt-2 max-w-md text-center text-sm text-secondaryText">
-        Estruturando desafios, contexto e critérios de match para reduzir churn e melhorar aderência na triagem.
+        Extraindo dados do prompt para montar o perfil de atuação — refine no preview antes de publicar.
       </p>
       <ul className="mt-8 w-full max-w-lg space-y-3">
         {ETAPAS.map((texto, i) => (

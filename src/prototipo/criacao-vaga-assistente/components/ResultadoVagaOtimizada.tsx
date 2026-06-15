@@ -1,40 +1,45 @@
-import { useState } from "react";
 import {
   AlertTriangle,
-  Eye,
   Layers,
   ShieldCheck,
   Target,
   TrendingDown,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { EXPERIENCIA_COMERCIAL } from "../config/experienciaComercial";
 import type { VagaOtimizadaResultado } from "../types";
-import { VagaPublicaPreviewDrawer } from "./VagaPublicaPreviewDrawer";
 
 interface ResultadoVagaOtimizadaProps {
   resultado: VagaOtimizadaResultado;
 }
 
 export function ResultadoVagaOtimizada({ resultado }: ResultadoVagaOtimizadaProps) {
-  const [previewOpen, setPreviewOpen] = useState(false);
+  const validacao = resultado.api.validacaoInformacoes;
 
   return (
     <div className="space-y-8">
       <div className="overflow-hidden rounded-2xl analise-brand-gradient p-[1px]">
         <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-secondaryBackground px-6 py-5">
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-accent">Vaga otimizada</p>
+            <p className="text-xs font-bold uppercase tracking-wider text-accent">Perfil gerado</p>
             <h2 className="mt-1 text-xl font-bold text-primaryText">{resultado.tituloSugerido}</h2>
+            <p className="mt-1 text-xs text-secondaryText">{validacao.mensagemUsuario}</p>
           </div>
           <div className="text-right">
             <p className="text-3xl font-bold analise-brand-gradient-text">{resultado.scoreQualidade}%</p>
-            <p className="text-[10px] uppercase tracking-wide text-secondaryText">Score de qualidade</p>
+            <p className="text-[10px] uppercase tracking-wide text-secondaryText">Completude do perfil</p>
           </div>
         </div>
       </div>
+
+      {resultado.promptOriginal && (
+        <section className="rounded-2xl border border-borderSoft bg-surfaceSubtle/50 p-4">
+          <p className="text-[10px] font-bold uppercase tracking-wide text-secondaryText">Prompt original</p>
+          <p className="mt-2 text-xs leading-relaxed text-primaryText">{resultado.promptOriginal}</p>
+        </section>
+      )}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="analise-glass analise-glow-card rounded-2xl p-5">
@@ -58,28 +63,30 @@ export function ResultadoVagaOtimizada({ resultado }: ResultadoVagaOtimizadaProp
         </div>
       </div>
 
-      <section className="rounded-2xl border border-borderSoft p-5">
-        <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-primaryText">
-          <Layers className="size-4 text-accent" aria-hidden />
-          Hierarquia do match
-        </h3>
-        <p className="mb-4 text-xs text-secondaryText">
-          Pesos sugeridos para triagem — alinhado ao protótipo Desafio/Match do Perfil de atuação e à Análise de
-          aderência.
-        </p>
-        <ul className="space-y-3">
-          {resultado.hierarquiaMatch.map((h) => (
-            <li key={h.label}>
-              <div className="flex justify-between text-xs">
-                <span className="font-semibold text-primaryText">{h.label}</span>
-                <span className="font-bold text-accent">{h.peso}%</span>
-              </div>
-              <Progress value={h.peso} className="mt-1 h-2" />
-              <p className="mt-0.5 text-[11px] text-secondaryText">{h.descricao}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {!EXPERIENCIA_COMERCIAL.ocultarHierarquiaMatch && (
+        <section className="rounded-2xl border border-borderSoft p-5">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-primaryText">
+            <Layers className="size-4 text-accent" aria-hidden />
+            Hierarquia do match
+          </h3>
+          <p className="mb-4 text-xs text-secondaryText">
+            Pesos sugeridos para triagem — alinhado ao protótipo Desafio/Match do Perfil de atuação e à Análise de
+            aderência.
+          </p>
+          <ul className="space-y-3">
+            {resultado.hierarquiaMatch.map((h) => (
+              <li key={h.label}>
+                <div className="flex justify-between text-xs">
+                  <span className="font-semibold text-primaryText">{h.label}</span>
+                  <span className="font-bold text-accent">{h.peso}%</span>
+                </div>
+                <Progress value={h.peso} className="mt-1 h-2" />
+                <p className="mt-0.5 text-[11px] text-secondaryText">{h.descricao}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="rounded-2xl border border-borderSoft p-5">
         <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-primaryText">
@@ -98,7 +105,7 @@ export function ResultadoVagaOtimizada({ resultado }: ResultadoVagaOtimizadaProp
           ))}
         </ul>
         <p className="mt-4 rounded-xl bg-surfaceSubtle p-3 text-xs leading-relaxed text-secondaryText">
-          <strong className="text-primaryText">Texto consolidado:</strong> {resultado.textoDesafioConsolidado}
+          <strong className="text-primaryText">Informações relevantes:</strong> {resultado.textoDesafioConsolidado}
         </p>
       </section>
 
@@ -111,19 +118,21 @@ export function ResultadoVagaOtimizada({ resultado }: ResultadoVagaOtimizadaProp
             ))}
           </ul>
         </section>
-        <section className="rounded-2xl border border-borderSoft p-5">
-          <h3 className="mb-2 text-sm font-semibold text-primaryText">Insights para triagem</h3>
-          <ul className="space-y-2">
-            {resultado.insightsTriagem.map((ins) => (
-              <li
-                key={ins}
-                className="rounded-lg border-l-4 border-accent bg-accentSoft/40 px-3 py-2 text-xs text-primaryText"
-              >
-                {ins}
-              </li>
-            ))}
-          </ul>
-        </section>
+        {!EXPERIENCIA_COMERCIAL.ocultarInsightsTriagem && (
+          <section className="rounded-2xl border border-borderSoft p-5">
+            <h3 className="mb-2 text-sm font-semibold text-primaryText">Insights para triagem</h3>
+            <ul className="space-y-2">
+              {resultado.insightsTriagem.map((ins) => (
+                <li
+                  key={ins}
+                  className="rounded-lg border-l-4 border-accent bg-accentSoft/40 px-3 py-2 text-xs text-primaryText"
+                >
+                  {ins}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
 
       <section className="rounded-2xl border border-warningBorder bg-warningSoft/25 p-5">
@@ -141,71 +150,59 @@ export function ResultadoVagaOtimizada({ resultado }: ResultadoVagaOtimizadaProp
         </ul>
       </section>
 
-      <section className="rounded-2xl border border-accent/30 bg-accentSoft/20 p-5">
-        <h3 className="mb-3 text-sm font-semibold text-primaryText">
-          Critérios para Análise de aderência (≥6)
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[480px] text-left text-xs">
-            <thead>
-              <tr className="border-b border-borderSoft text-secondaryText">
-                <th className="py-2 pr-2 font-semibold">Critério</th>
-                <th className="py-2 pr-2 font-semibold">Peso</th>
-                <th className="py-2 pr-2 font-semibold">Desafio</th>
-                <th className="py-2 font-semibold">Evidência esperada</th>
-              </tr>
-            </thead>
-            <tbody>
-              {resultado.criteriosAderencia.map((cr) => (
-                <tr key={cr.id} className="border-b border-borderSoft last:border-0">
-                  <td className="py-2 pr-2 font-medium text-primaryText">{cr.nome}</td>
-                  <td className="py-2 pr-2">
-                    <Badge variant="outline">{cr.peso}/5</Badge>
-                  </td>
-                  <td className="py-2 pr-2 text-secondaryText">{cr.desafioVaga}</td>
-                  <td className="py-2 text-secondaryText">{cr.evidenciaEsperada}</td>
+      {!EXPERIENCIA_COMERCIAL.ocultarCriteriosAderencia && (
+        <section className="rounded-2xl border border-accent/30 bg-accentSoft/20 p-5">
+          <h3 className="mb-3 text-sm font-semibold text-primaryText">
+            Critérios para Análise de aderência (≥6)
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[480px] text-left text-xs">
+              <thead>
+                <tr className="border-b border-borderSoft text-secondaryText">
+                  <th className="py-2 pr-2 font-semibold">Critério</th>
+                  <th className="py-2 pr-2 font-semibold">Peso</th>
+                  <th className="py-2 pr-2 font-semibold">Desafio</th>
+                  <th className="py-2 font-semibold">Evidência esperada</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+              </thead>
+              <tbody>
+                {resultado.criteriosAderencia.map((cr) => (
+                  <tr key={cr.id} className="border-b border-borderSoft last:border-0">
+                    <td className="py-2 pr-2 font-medium text-primaryText">{cr.nome}</td>
+                    <td className="py-2 pr-2">
+                      <Badge variant="outline">{cr.peso}/5</Badge>
+                    </td>
+                    <td className="py-2 pr-2 text-secondaryText">{cr.desafioVaga}</td>
+                    <td className="py-2 text-secondaryText">{cr.evidenciaEsperada}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       <section className="rounded-2xl border border-borderSoft p-5">
         <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-primaryText">
           <ShieldCheck className="size-4 text-success" aria-hidden />
-          Skills sugeridas
+          Skills extraídas e propostas
         </h3>
+        <p className="mb-3 text-xs text-secondaryText">
+          Extraídas do prompt · Propostas pela IA — edite no preview para ajustar o match.
+        </p>
         <div className="flex flex-wrap gap-2">
           {resultado.skillsSugeridas.map((s) => (
             <Badge
-              key={s.nome}
-              variant={s.relevante ? "default" : "secondary"}
+              key={`${s.origem}-${s.nome}`}
+              variant={s.origem === "extraida" ? "default" : "secondary"}
               className="text-xs"
             >
               {s.nome} · {s.nivel}
-              {s.relevante ? " · impresc." : " · desej."}
+              {s.origem === "extraida" ? " · extraída" : " · proposta"}
             </Badge>
           ))}
         </div>
       </section>
-
-      <div className="border-t border-borderSoft pt-6">
-        <Button
-          type="button"
-          className="gap-2 rounded-full analise-brand-gradient border-0 text-white shadow-lg hover:opacity-95"
-          onClick={() => setPreviewOpen(true)}
-        >
-          <Eye className="size-4" aria-hidden />
-          Preview da vaga
-        </Button>
-      </div>
-
-      <VagaPublicaPreviewDrawer
-        resultado={resultado}
-        open={previewOpen}
-        onOpenChange={setPreviewOpen}
-      />
     </div>
   );
 }

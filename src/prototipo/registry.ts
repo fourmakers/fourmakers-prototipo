@@ -73,7 +73,7 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
     menuLabel: "Assistente criação de vaga",
     cardTitle: "Assistente de criação de vaga",
     cardDescription:
-      "Otimize vagas com IA (formulário ou prompt): contexto, desafios, hierarquia de match, anti-churn e critérios para Análise de aderência.",
+      "Criação dinâmica de perfil/vaga com IA (prompt ou formulário), preview editável e completude do perfil antes da publicação.",
     routeSlug: "criacao-vaga-assistente",
     documentationMarkdownFile: "CRIACAO_VAGA_ASSISTENTE_DOCUMENTACAO_TECNICA.md",
     Component: CriacaoVagaAssistentePage,

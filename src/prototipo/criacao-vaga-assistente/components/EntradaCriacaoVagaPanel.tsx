@@ -93,12 +93,12 @@ export function EntradaCriacaoVagaPanel({
 
       <TabsContent value="prompt" className="mt-0 space-y-3">
         <p className="text-xs text-secondaryText">
-          Descreva em linguagem natural o perfil desejado, dores e objetivo de longo prazo. A IA estrutura desafios,
-          critérios de aderência e recomendações anti-churn (como na Análise de aderência).
+          Descreva em linguagem natural o perfil desejado, stack, modelo de trabalho e contexto. A IA extrai nome,
+          informações relevantes e skills — refine tudo no preview antes de publicar.
         </p>
         <Textarea
           className="min-h-[200px] rounded-xl font-normal"
-          placeholder="Ex.: Vaga UX sênior na ONESYS para o Carlos Mendes. Precisamos de alguém com design system e a11y em produto RH. Queremos reduzir churn nos primeiros 12 meses e melhorar match na triagem..."
+          placeholder="Ex.: Tech Lead Frontend Senior remoto. FlutterFlow, React, Design System, Cursor. Liderar squads, integrar APIs e reduzir retrabalho entre design e engenharia..."
           value={prompt}
           onChange={(e) => onPromptChange(e.target.value)}
         />
