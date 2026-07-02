@@ -101,7 +101,6 @@ export function ContentsquareWebDashboard({ report }: { report: ContentsquareWeb
           {report.series.map((serie) => (
             <ContentsquareSerieChart
               key={serie.id}
-              cardId={`${report.kind}-serie-${serie.id}`}
               titulo={serie.titulo}
               serie={serie.dados}
               unidade={serie.unidade}
