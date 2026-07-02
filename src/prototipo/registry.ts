@@ -2,6 +2,8 @@ import type { ComponentType } from "react";
 import { AgenteAutodescobertaPage } from "@/prototipo/pages/AgenteAutodescobertaPage";
 import { DashboardComercialQualidadeBasePage } from "@/prototipo/dashboard-comercial/DashboardComercialQualidadeBasePage";
 import { AnalyticsMetricasAppPage } from "@/prototipo/pages/AnalyticsMetricasAppPage";
+import { AnalyticsMetricasRecrutamentoPage } from "@/prototipo/pages/AnalyticsMetricasRecrutamentoPage";
+import { AnalyticsMetricasCandidatosPage } from "@/prototipo/pages/AnalyticsMetricasCandidatosPage";
 import { AberturaVagaSubstituicaoPage } from "@/prototipo/pages/AberturaVagaSubstituicaoPage";
 import { AnaliseAderenciaPage } from "@/prototipo/pages/AnaliseAderenciaPage";
 import { CriacaoVagaAssistentePage } from "@/prototipo/pages/CriacaoVagaAssistentePage";
@@ -113,6 +115,28 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
     routeSlug: "metricas-app",
     documentationMarkdownFile: "ANALYTICS_METRICAS_APP_DOCUMENTACAO_TECNICA.md",
     Component: AnalyticsMetricasAppPage,
+  },
+  {
+    id: "analytics-metricas-recrutamento",
+    path: "/metricas-recrutamento",
+    menuGroup: "analytics",
+    menuLabel: "Métricas Recrutamento",
+    cardTitle: "Métricas Recrutamento",
+    cardDescription:
+      "Dashboard executivo Contentsquare — criação de vagas, heatmaps, erros JS, uso de IA e parecer de churn/fricção com import/export de planilhas.",
+    routeSlug: "metricas-recrutamento",
+    Component: AnalyticsMetricasRecrutamentoPage,
+  },
+  {
+    id: "analytics-metricas-candidatos",
+    path: "/metricas-candidatos",
+    menuGroup: "analytics",
+    menuLabel: "Métricas Candidatos",
+    cardDescription:
+      "Dashboard executivo Contentsquare — inscrição em vagas externas, upload de CV, bounce/exit rate e análise geográfica com import/export.",
+    cardTitle: "Métricas Candidatos",
+    routeSlug: "metricas-candidatos",
+    Component: AnalyticsMetricasCandidatosPage,
   },
 ];
 

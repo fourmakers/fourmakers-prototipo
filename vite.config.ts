@@ -19,7 +19,8 @@ const analyticsApiProxyTarget =
 const analyticsProxy =
   process.env.VITE_ANALYTICS_PROXY_DISABLED !== "true"
     ? {
-        "/analytics": {
+        // Apenas rotas da Analytics API — não interceptar assets estáticos em /analytics/heatmaps/
+        "/analytics/app": {
           target: analyticsApiProxyTarget,
           changeOrigin: true,
           secure: false,
