@@ -238,26 +238,12 @@ function buildRecruitmentTables(parsed: ParsedContentsquareExport): ReportTable[
 function buildCandidateTables(parsed: ParsedContentsquareExport): ReportTable[] {
   const tables: ReportTable[] = [];
 
-  const cities = findWidget(parsed, "local do usuário");
-  if (cities) {
-    const rows = widgetTable(cities);
-    tables.push({
-      id: "cidades",
-      titulo: "Sessões por cidade (Desktop)",
-      colunas: [
-        { key: "cidade", label: "Cidade" },
-        { key: "sessoes", label: "Sessões", align: "right" },
-      ],
-      linhas: rows.map((r) => ({ cidade: r.label, sessoes: r.value })),
-    });
-  }
-
   const deviceTypes = findWidget(parsed, "tipo de device");
   if (deviceTypes) {
     const rows = widgetTable(deviceTypes);
     tables.push({
       id: "tipo-device",
-      titulo: "Usuários por tipo de device",
+      titulo: "Tipo de device",
       colunas: [
         { key: "device", label: "Device" },
         { key: "usuarios", label: "Usuários", align: "right" },
@@ -271,12 +257,26 @@ function buildCandidateTables(parsed: ParsedContentsquareExport): ReportTable[] 
     const rows = widgetTable(resolutions);
     tables.push({
       id: "resolucoes",
-      titulo: "Usuários por resolução de tela",
+      titulo: "Resolução de Tela",
       colunas: [
         { key: "resolucao", label: "Resolução" },
         { key: "usuarios", label: "Usuários", align: "right" },
       ],
       linhas: rows.map((r) => ({ resolucao: r.label, usuarios: r.value })),
+    });
+  }
+
+  const cities = findWidget(parsed, "local do usuário");
+  if (cities) {
+    const rows = widgetTable(cities);
+    tables.push({
+      id: "cidades",
+      titulo: "Sessões por cidade (Desktop)",
+      colunas: [
+        { key: "cidade", label: "Cidade" },
+        { key: "sessoes", label: "Sessões", align: "right" },
+      ],
+      linhas: rows.map((r) => ({ cidade: r.label, sessoes: r.value })),
     });
   }
 
@@ -396,8 +396,20 @@ function buildCandidateParecer(kpis: KpiMetric[], series: ReportSerie[], tables:
   const deviceTable = tables.find((t) => t.id === "tipo-device");
   const desktopUsers = Number(deviceTable?.linhas.find((r) => r.device === "Desktop")?.usuarios ?? 152);
   const mobileUsers = Number(deviceTable?.linhas.find((r) => r.device === "Mobile")?.usuarios ?? 68);
+  const tabletUsers = Number(deviceTable?.linhas.find((r) => r.device === "Tablet")?.usuarios ?? 1);
+  const totalUsers = Number(kpis.find((k) => k.id === "usuarios")?.value?.toString().replace(/\./g, "") ?? 221);
+  const mobilePct = totalUsers > 0 ? (mobileUsers / totalUsers) * 100 : 0;
+  const desktopPct = totalUsers > 0 ? (desktopUsers / totalUsers) * 100 : 0;
+
   const resolutionTable = tables.find((t) => t.id === "resolucoes");
   const topResolution = resolutionTable?.linhas[0]?.resolucao ?? "1920 x 1080";
+  const mobileResUsers =
+    resolutionTable?.linhas
+      .filter((r) => {
+        const res = String(r.resolucao);
+        return res.includes("393") || res.includes("430") || res.includes("390");
+      })
+      .reduce((acc, r) => acc + Number(r.usuarios ?? 0), 0) ?? 19;
 
   const positivos: InsightItem[] = [
     {
@@ -425,8 +437,13 @@ function buildCandidateParecer(kpis: KpiMetric[], series: ReportSerie[], tables:
     },
     {
       tipo: "positive",
-      titulo: "Base majoritariamente desktop (69%)",
-      descricao: `${fmtNum(desktopUsers)} usuários em desktop — experiência otimizada para formulário completo; resolução líder: ${topResolution}.`,
+      titulo: `Desktop lidera com ${fmtPct(desktopPct)} (${fmtNum(desktopUsers)} usuários)`,
+      descricao: `Tipo de device confirma predominância desktop. Resolução líder: ${topResolution} (53 usuários) — layout wide funciona bem para leitura da vaga.`,
+    },
+    {
+      tipo: "positive",
+      titulo: "Distribuição geográfica concentrada",
+      descricao: "São Paulo concentra 84 sessões desktop — vaga com alcance regional forte no eixo SP.",
     },
   ];
 
@@ -455,24 +472,29 @@ function buildCandidateParecer(kpis: KpiMetric[], series: ReportSerie[], tables:
     },
     {
       tipo: "warning",
-      titulo: `${fmtNum(mobileUsers)} usuários mobile (${fmtPct((mobileUsers / 221) * 100)})`,
-      descricao:
-        "Quase um terço do tráfego vem de mobile — validar responsividade do formulário e bounce específico em telas menores (393×852 e 430×932 nas resoluções).",
+      titulo: `${fmtNum(mobileUsers)} usuários mobile (${fmtPct(mobilePct)})`,
+      descricao: `${fmtNum(mobileResUsers)} usuários em resoluções mobile (393×852, 430×932). Validar formulário responsivo e taxa de conclusão nestes devices.`,
+    },
+    {
+      tipo: "info",
+      titulo: "Tablet e Unknown (2 usuários)",
+      descricao: `Tablet (${tabletUsers}) e Unknown representam volume marginal — monitorar mas não prioritário frente a desktop/mobile.`,
     },
   ];
 
   return {
     resumo:
-      "A jornada do candidato na vaga externa demonstra forte intenção de inscrição (scroll 97,6%) e adoção do upload de CV. O bounce rate médio de 37,1% e exit rate de 27,4% indicam oportunidades de otimização no funil, especialmente nos campos de dados pessoais e remuneração.",
+      `A jornada do candidato na vaga externa (221 usuários, 115 novos) combina forte intenção de inscrição com mix ${fmtPct(desktopPct)} desktop / ${fmtPct(mobilePct)} mobile. ` +
+      `Resolução de Tela confirma ${topResolution} como padrão (53 usuários), com presença relevante mobile. Bounce médio ${fmtPct(bounceAvg)} e exit rate 27,4% indicam oportunidades no funil de inscrição.`,
     pontosPositivos: positivos,
     pontosAtencao: atencao,
     recomendacoes: [
+      "Priorizar QA mobile (30,8%) — resoluções 393×852 e 430×932 somam 19 usuários na Resolução de Tela.",
       "Simplificar preenchimento de CPF/CEP com máscara e autocompletar de endereço.",
-      "Testar jornada mobile (30,8% dos usuários) — priorizar campos acima da dobra.",
       "Tornar campo de remuneração opcional ou com faixas para reduzir abandono.",
       "Destacar benefícios da vaga acima da dobra para reduzir bounce em desktop.",
+      "Segmentar métricas por Tipo de device (Desktop vs Mobile) nos próximos exports Contentsquare.",
       "Acompanhar taxa de conclusão «Realizar inscrição» como KPI principal do funil.",
-      "Manter e comunicar upload de CV como diferencial competitivo.",
     ],
     notaGeral: bounceAvg > 45 ? "regular" : "bom",
   };
