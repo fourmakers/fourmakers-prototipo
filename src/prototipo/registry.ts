@@ -7,14 +7,22 @@ import { AnalyticsMetricasCandidatosPage } from "@/prototipo/pages/AnalyticsMetr
 import { AberturaVagaSubstituicaoPage } from "@/prototipo/pages/AberturaVagaSubstituicaoPage";
 import { AnaliseAderenciaPage } from "@/prototipo/pages/AnaliseAderenciaPage";
 import { CriacaoVagaAssistentePage } from "@/prototipo/pages/CriacaoVagaAssistentePage";
+import { ShowcaseConarhPage } from "@/prototipo/showcase/ShowcaseConarhPage";
 
 /** Grupo no menu lateral e na home */
-export type PrototipoMenuGroup = "prototipos" | "analytics";
+export type PrototipoMenuGroup = "showcase" | "prototipos" | "analytics";
 
 export const MENU_GROUP_LABELS: Record<PrototipoMenuGroup, string> = {
+  showcase: "Showcase",
   prototipos: "Protótipos",
   analytics: "Analytics",
 };
+
+/**
+ * `app` (padrão) — rota filha de `MainLayout` (Header + Sidebar).
+ * `fullscreen` — rota fora do `MainLayout`, ocupando toda a viewport.
+ */
+export type PrototipoLayout = "app" | "fullscreen";
 
 /**
  * Registro de protótipos (rotas na raiz do app, sem prefixo `/prototipo/`).
@@ -41,10 +49,25 @@ export interface PrototipoRegistryEntry {
    * O botão de download na home usa `/docs/{nome}`. Sincronização: `npm run sync:prototipo-docs` (corre no dev/build).
    */
   documentationMarkdownFile?: string;
+  /** Layout da rota — `app` (padrão) ou `fullscreen` */
+  layout?: PrototipoLayout;
   Component: ComponentType;
 }
 
 export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
+  {
+    id: "showcase-conarh",
+    path: "/showcase",
+    menuGroup: "showcase",
+    menuLabel: "Showcase",
+    cardTitle: "Showcase ConaRH",
+    cardDescription:
+      "Experiência em tela cheia para estande: cards animados por feature, vídeo em loop e narrativa de negócio (impacto, capabilities e benefícios esperados).",
+    routeSlug: "showcase",
+    layout: "fullscreen",
+    documentationMarkdownFile: "SHOWCASE_CONARH_DOCUMENTACAO_TECNICA.md",
+    Component: ShowcaseConarhPage,
+  },
   {
     id: "agente-autodescoberta",
     path: "/agente-autodescoberta",
@@ -142,4 +165,8 @@ export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
 
 export function registryByMenuGroup(group: PrototipoMenuGroup): PrototipoRegistryEntry[] {
   return PROTOTIPO_REGISTRY.filter((e) => e.menuGroup === group);
+}
+
+export function registryByLayout(layout: PrototipoLayout): PrototipoRegistryEntry[] {
+  return PROTOTIPO_REGISTRY.filter((e) => (e.layout ?? "app") === layout);
 }

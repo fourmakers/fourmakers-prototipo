@@ -9,6 +9,7 @@ import {
   ChevronRight,
   ChevronDown,
   LogOut,
+  Sparkles,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -23,6 +24,7 @@ const SIDEBAR_COLLAPSED_WIDTH = "72px";
 const HEADER_HEIGHT = "72px";
 
 const GROUP_ICONS: Record<PrototipoMenuGroup, typeof Layers> = {
+  showcase: Sparkles,
   prototipos: Layers,
   analytics: BarChart3,
 };
@@ -60,6 +62,53 @@ function SubNavLink({
       {collapsed && <span className="sr-only">{label}</span>}
     </button>
   );
+  return collapsed ? (
+    <Tooltip delayDuration={300}>
+      <TooltipTrigger asChild>{button}</TooltipTrigger>
+      <TooltipContent side="right" className="font-medium">
+        {label}
+      </TooltipContent>
+    </Tooltip>
+  ) : (
+    button
+  );
+}
+
+/** Item de primeiro nível (fora dos grupos colapsáveis), como Início e Showcase. */
+function TopNavLink({
+  label,
+  icon: Icon,
+  collapsed,
+  isActive,
+  onSelect,
+}: {
+  label: string;
+  icon: typeof Layers;
+  collapsed: boolean;
+  isActive: boolean;
+  onSelect: () => void;
+}) {
+  const button = (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={[
+        "flex items-center gap-2 w-full min-w-0 box-border rounded-pillToken text-[0.875rem] font-semibold transition-all duration-200",
+        collapsed ? "justify-center py-3 px-3" : "justify-start py-3 pl-4 pr-2",
+        isActive
+          ? "bg-btnPrimary text-on-primary shadow-softToken hover:bg-btnPrimaryHover"
+          : "text-secondaryText hover:bg-btnGhostHover hover:text-primary",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      ].join(" ")}
+    >
+      <span className="flex shrink-0 w-6 h-6 items-center justify-center [&_svg]:size-5">
+        <Icon className="size-5" aria-hidden />
+      </span>
+      {!collapsed && <span className="truncate">{label}</span>}
+      {collapsed && <span className="sr-only">{label}</span>}
+    </button>
+  );
+
   return collapsed ? (
     <Tooltip delayDuration={300}>
       <TooltipTrigger asChild>{button}</TooltipTrigger>
@@ -263,6 +312,17 @@ export function Sidebar({ collapsed, onClose, onToggleCollapse }: SidebarProps) 
           ) : (
             inicioButton
           )}
+
+          {registryByMenuGroup("showcase").map((entry) => (
+            <TopNavLink
+              key={entry.id}
+              label={entry.menuLabel}
+              icon={GROUP_ICONS.showcase}
+              collapsed={collapsed}
+              isActive={pathname === entry.path}
+              onSelect={() => go(entry.path)}
+            />
+          ))}
 
           <NavGroupSection
             group="prototipos"

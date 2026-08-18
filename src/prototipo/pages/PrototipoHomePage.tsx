@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import { BarChart3, Download, Folder, Layers } from "lucide-react";
+import { BarChart3, Download, Folder, Layers, Sparkles } from "lucide-react";
 import { MENU_GROUP_LABELS, registryByMenuGroup, type PrototipoMenuGroup, type PrototipoRegistryEntry } from "@/prototipo/registry";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { downloadTechnicalDoc } from "@/prototipo/downloadTechnicalDoc";
 
-const GROUP_ORDER: PrototipoMenuGroup[] = ["prototipos", "analytics"];
+const GROUP_ORDER: PrototipoMenuGroup[] = ["showcase", "prototipos", "analytics"];
 
 const GROUP_ICONS: Record<PrototipoMenuGroup, typeof Layers> = {
+  showcase: Sparkles,
   prototipos: Layers,
   analytics: BarChart3,
 };

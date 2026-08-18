@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { PrototipoHomePage } from "@/prototipo/pages/PrototipoHomePage";
 import { getLegacyRouteRedirects } from "@/prototipo/legacyRoutes";
-import { PROTOTIPO_REGISTRY } from "@/prototipo/registry";
+import { registryByLayout } from "@/prototipo/registry";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,9 +25,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter basename={routerBasename()}>
         <Routes>
+          {registryByLayout("fullscreen").map((entry) => (
+            <Route key={entry.id} path={entry.path} element={<entry.Component />} />
+          ))}
           <Route element={<MainLayout />}>
             <Route path="/" element={<PrototipoHomePage />} />
-            {PROTOTIPO_REGISTRY.map((entry) => (
+            {registryByLayout("app").map((entry) => (
               <Route key={entry.id} path={entry.path} element={<entry.Component />} />
             ))}
             {getLegacyRouteRedirects().map(({ from, to }) => (

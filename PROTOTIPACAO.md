@@ -9,7 +9,7 @@ No GitHub Pages o site fica em `https://<org>.github.io/fourmakers-prototipo/` �
 - **Início (`/`)** — lista em cards dos protótipos registrados (atalhos para cada `path` do registro).
 - **Features** — cada protótipo usa o `path` na raiz em `registry.ts` (ex.: `/analise-aderencia`, `/metricas-app`); URLs antigas (`/prototipo/...`, `/recrutamento/...`, etc.) redirecionam automaticamente.
 
-Todas as telas usam **Header**, **Sidebar** e **área de conteúdo** do `MainLayout`.
+Por defeito as telas usam **Header**, **Sidebar** e **área de conteúdo** do `MainLayout`. Entradas com `layout: "fullscreen"` no registro ficam **fora** do `MainLayout` e ocupam toda a viewport (ex.: `/showcase`), mantendo o item no menu e o card na home.
 
 ---
 
@@ -31,6 +31,7 @@ Todas as telas usam **Header**, **Sidebar** e **área de conteúdo** do `MainLay
 |--------|--------|
 | **Registro de protótipos (rotas + menu + cards + doc .md para download)** | `src/prototipo/registry.ts` (`documentationMarkdownFile` opcional) |
 | **Páginas do módulo** | `src/prototipo/pages/` |
+| Showcase ConaRH (tela cheia `/showcase`) | `src/prototipo/showcase/` · vídeos e posters em `public/showcase/` |
 | Página inicial (hub) | `src/prototipo/pages/PrototipoHomePage.tsx` |
 | Página 404 | `src/pages/NotFound.tsx` |
 | Componentes de UI (DS) | `src/components/ui/` |
@@ -44,7 +45,7 @@ Todas as telas usam **Header**, **Sidebar** e **área de conteúdo** do `MainLay
 ## Como criar um novo protótipo
 
 1. **Criar a página** em `src/prototipo/pages/NomeDaFeaturePage.tsx` (export nomeado).
-2. **Registrar** em `src/prototipo/registry.ts`: importe o componente e adicione um objeto com `id`, `path` (ex.: `/slug-kebab` na raiz — **sem** `/prototipo/` nem módulo tipo `/recrutamento/`), `menuLabel`, `cardTitle`, `cardDescription`, `routeSlug` (igual ao slug do path), `Component`, e opcionalmente **`documentationMarkdownFile`**. URLs legadas: `src/prototipo/legacyRoutes.ts`.
+2. **Registrar** em `src/prototipo/registry.ts`: importe o componente e adicione um objeto com `id`, `path` (ex.: `/slug-kebab` na raiz — **sem** `/prototipo/` nem módulo tipo `/recrutamento/`), `menuGroup`, `menuLabel`, `cardTitle`, `cardDescription`, `routeSlug` (igual ao slug do path), `Component`, e opcionalmente **`documentationMarkdownFile`** e **`layout: "fullscreen"`** (tela cheia, sem Header/Sidebar). URLs legadas: `src/prototipo/legacyRoutes.ts`.
 3. A rota em `App.tsx` é criada **automaticamente** a partir do registro; o item aparece no grupo **Protótipos** no menu e no grid da home.
 
 Não é necessário editar o `Sidebar` manualmente para novos itens.
