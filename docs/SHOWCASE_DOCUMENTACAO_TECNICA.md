@@ -1,9 +1,9 @@
-# Showcase ConaRH – Documentação Técnica (Regras de Negócio e Backend)
+# Showcase – Documentação Técnica (Regras de Negócio e Backend)
 
-Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fourmakers: experiência em **tela cheia** para demonstração em evento (ConaRH), com cards animados por feature, vídeo em loop e narrativa de negócio (título, resumo, impacto, tags, capabilities e benefícios).
+Documentação **multi-audiência** do protótipo **Showcase** no hub Fourmakers: experiência em **tela cheia** para demonstração em evento, com cards animados por feature, vídeo em loop e narrativa de negócio (título, resumo, impacto, tags, capabilities e benefícios).
 
 **Criado em:** 18/08/2026  
-**Última atualização:** 18/08/2026 — criação do showcase, assets de vídeo/poster e documentação com conteúdo editável.
+**Última atualização:** 21/08/2026 — descaracterização da marca de evento (sem nome de feira); inclusão das duas features de **agentes de IA** (`perfil-agentes-ia` e `candidatos-agentes-ia`) como itens 1 e 2 da narrativa.
 
 **Estado:** protótipo front **somente conteúdo estático + mídia local** (sem API). Integração backend **não aplicável** nesta versão; secção de sugestões cobre evolução CMS/config se o conteúdo passar a ser gerido remotamente.
 
@@ -14,7 +14,7 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | Audiência | Secções prioritárias | Uso |
 |-----------|---------------------|-----|
 | **Comercial / estande / marketing** | §1–§3, **§4.2 Conteúdo editável**, §9 | Ajustar copy, ordem das features, frases de totem |
-| **Negócio / PO** | §1, §4, Bloco A §2 e §5 | Aceite da narrativa ConaRH |
+| **Negócio / PO** | §1, §4, Bloco A §2 e §5 | Aceite da narrativa do estande |
 | **Frontend** | §5, §6, §8, §13 | Layout fullscreen, cards, overlay, assets |
 | **Backend .NET 8** | Bloco A §10, **Sugestões para integração** | Só se evoluir para CMS/API de conteúdo |
 | **QA** | §8, §9 | Smoke de rota, hover, vídeo, teclado |
@@ -39,15 +39,16 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 |------|-----------|
 | **Rota (protótipo)** | `/showcase` |
 | **Layout** | `fullscreen` — **fora** do `MainLayout` (sem Header/Sidebar do hub) |
-| **Registo hub** | `id: showcase-conarh`, `menuGroup: showcase`, `menuLabel: Showcase` |
-| **Título na UI** | Showcase ConaRH · Jornada Inteligente de Atração e Seleção |
+| **Registo hub** | `id: showcase`, `menuGroup: showcase`, `menuLabel: Showcase` |
+| **Título na UI** | Showcase · Jornada Inteligente de Atração e Seleção |
 | **Descrição (card)** | Experiência em tela cheia para estande: cards animados por feature, vídeo em loop e narrativa de negócio. |
 | **Persona** | Visitante de estande / demonstrador comercial / RH-TA em evento |
 | **Objetivo de negócio** | Demonstrar know-how e eficiência da plataforma Fourmakers em atração e seleção, com linguagem de People Analytics e ROI narrativo |
 
 ### 1.2 Objetivos principais (visão de produto)
 
-- Apresentar a **jornada ponta a ponta** (perfil → vaga → candidatos → entrevistas → kanban → painel executivo).
+- Abrir a demo com o tema de maior impacto no evento: **agentes de IA como superpoderes das pessoas** (composição do perfil híbrido e candidatos com agentes).
+- Apresentar a **jornada ponta a ponta** (composição com agentes → perfil → vaga → candidatos → entrevistas → kanban → painel executivo).
 - Captar atenção no estande com **frase de impacto** grande e vídeo em preview no hover.
 - Estruturar cada feature em: título, resumo, impacto, tags, “o que o cliente recebe”, benefícios esperados.
 - Manter **consistência visual** com o site institucional (gradientes `#9A1BFF` / `#4CBFFF` / `#3BFE95`, cards com borda gradiente, reveal no scroll).
@@ -55,7 +56,9 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 
 ### 1.3 Mensagem guarda-chuva
 
-> Do briefing ao fill: menos tempo de ciclo, mais aderência e decisões com dados — com IA aplicada de ponta a ponta na atração e seleção.
+> Do briefing ao fill: menos tempo de ciclo, mais aderência e decisões com dados — com agentes de IA que ampliam a capacidade do time e mantêm a decisão com as pessoas.
+
+**Princípio central da abertura (features 1 e 2):** *Agentes são superpoderes das pessoas. A IA amplia — o humano decide.*
 
 ---
 
@@ -72,13 +75,17 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 
 **Ordem sugerida no estande (igual ao código):**
 
-1. Criação de Perfil e Vaga com IA  
-2. Gestão de Candidatos + Mapa de Aderência  
-3. Gestão de Vagas  
-4. Gestão de Perfis  
-5. Entrevistas  
-6. Kanban Builder  
-7. Painel Executivo  
+1. Criação de Perfil Potencializado com Agentes de IA  
+2. Acompanhamento de Candidatos com Agentes de IA  
+3. Criação de Perfil e Vaga com IA  
+4. Gestão de Candidatos + Mapa de Aderência  
+5. Gestão de Vagas  
+6. Gestão de Perfis  
+7. Entrevistas  
+8. Kanban Builder  
+9. Painel Executivo  
+
+> As duas primeiras features são a **abertura de impacto** do estande: mostram o desenho de trabalho híbrido (humano + agentes) antes de percorrer a jornada operacional de atração e seleção.
 
 ---
 
@@ -88,7 +95,7 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 |----------------|---------------------------|
 | Layout fullscreen | Rota fora do `MainLayout` via `layout: "fullscreen"` no registry |
 | Menu Showcase | Item de 1.º nível no Sidebar (ícone Sparkles), abaixo de Início |
-| Hero | Logo invertido, badge ConaRH, CTAs “Explorar” e “Iniciar demonstração” |
+| Hero | Logo invertido, badge Showcase, CTAs “Explorar” e “Iniciar demonstração” |
 | Marquee | Frases de totem em loop; `prefers-reduced-motion` desliga animações |
 | Cards | Grid 1/2/3 colunas; stagger reveal; hover preview de vídeo |
 | Overlay detalhe | Vídeo loop, impacto, tags, delivers, benefits, benefício âncora |
@@ -108,18 +115,48 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | **Vídeo sem áudio/controles** | Loop mudo (`muted`, `loop`, `playsInline`, `controls={false}`) para demo contínua. |
 | **Um vídeo por feature** | Nome do ficheiro = `id` da feature. |
 | **Ordem = narrativa** | Campo `step` define ordem no grid e no overlay. |
-| **Copy de negócio** | Linguagem de TA / People Analytics / ConaRH — não jargão técnico de implementação. |
+| **Copy de negócio** | Linguagem de TA / People Analytics — não jargão técnico de implementação. |
 
 ### 4.2 Conteúdo editável das features (fonte documental)
 
 > **Edite aqui e sincronize com `src/prototipo/showcase/showcaseContent.ts`.**  
 > Campos por feature: `id`, `step`, `journey`, `title`, `summary`, `impact`, `anchorMetric`, `tags[]`, `delivers[]`, `benefits[]`, ficheiros `videos/{id}.mp4` e `posters/{id}.jpg`.
 
-#### Feature 1 — `perfil-vaga-ia`
+#### Feature 1 — `perfil-agentes-ia`
 
 | Campo | Valor |
 |-------|--------|
-| **step / journey** | 1 · Atração · Time-to-post |
+| **step / journey** | 1 · Composição · Capacidade ampliada |
+| **title** | Criação de Perfil Potencializado com Agentes de IA |
+| **summary** | O perfil deixa de ser lista de requisitos e passa a ser composição: a IA decompõe o papel em desafios com peso, mostra o que agentes resolvem e o que exige julgamento humano, abre o custo de cada arranjo e conduz a jornada até o perfil híbrido aprovado — que evolui em ciclos. |
+| **impact** | Agentes são superpoderes das pessoas. A IA amplia — o humano decide. |
+| **anchorMetric** | Mais capacidade dentro do mesmo orçamento |
+| **tags** | Perfil Híbrido · Humano × Agentes · Cartão de Composição · Resíduo Humano-Crítico · Orçamento de Capacidade · Governança de IA · Nexus IA |
+| **delivers** | Decomposição do papel em desafios com peso e o porquê de cada split; Split humano × agentes por desafio em duas estratégias (melhor capacidade / adequação ao orçamento); Custo mensal aberto (pessoa + cada agente) com status de orçamento; Override supervisionado pelo gestor; Cartão de composição por profissional (núcleo humano, superpoderes, % do papel); Roteiro de entrevista a partir do resíduo humano-crítico; Perfil híbrido com agentes ativos no dia 1 e alerta de recomposição |
+| **benefits** | Mais capacidade no mesmo orçamento de headcount; Custo e cobertura visíveis antes de abrir a vaga; Ampliação do pool (perfis júniores viabilizados por agentes); Escopo explícito humano × IA; Rastreabilidade e revogação de cada agente; Mobilidade interna antes da busca externa (68% → 85%) |
+| **vídeo origem** | `recrutamento_perfil_agente.mov` → `perfil-agentes-ia.mp4` |
+| **base do conteúdo** | Jornada `Novo perfil com agentes` (5 etapas: Composição · Match · Seleção · Perfil híbrido · Evolução) — orçamento R$ 12.000/mês, 6 desafios com peso, agentes de Triagem de PRs / Testes-QA / Documentação / Observabilidade |
+
+#### Feature 2 — `candidatos-agentes-ia`
+
+| Campo | Valor |
+|-------|--------|
+| **step / journey** | 2 · Talento · Capacidade com agentes |
+| **title** | Acompanhamento de Candidatos com Agentes de IA |
+| **summary** | O funil da vaga mostra, em cada card, os agentes de IA que a pessoa já opera — ao lado do mapa de aderência e do match. O dossiê completo abre em drawer, com completude de perfil, trilha profissional e acesso a dados sensíveis governado por permissão. |
+| **impact** | Não é só quem a pessoa é. É o que ela entrega com os agentes que domina. |
+| **anchorMetric** | Capacidade real do candidato: pessoa + agentes |
+| **tags** | Agentes do Candidato · Mapa de Aderência · Kanban de Candidatos · Dossiê do Candidato · Completude de Perfil · Governança de Dados · Nexus IA |
+| **delivers** | Funil em kanban e lista, com etapas configuráveis e arraste; Agentes de IA declarados por candidato no card, com contagem e expansão; Mapa de aderência e match por etapa; Origem da candidatura, tempo decorrido e histórico; Dossiê em drawer (perfil, experiências, certificações, educação, habilidades); Completude do perfil com dados críticos e reconhecimentos; Acesso a remuneração e dados sensíveis por permissão |
+| **benefits** | Leitura de capacidade ampliada (pessoa + agentes); Triagem mais rápida com aderência e match no card; Menos abas e planilhas; Decisão com evidência e governança de dados; Priorização clara por etapa; Conversa de contratação alinhada ao perfil híbrido |
+| **vídeo origem** | `recrutamento_candidato_agente.mov` → `candidatos-agentes-ia.mp4` |
+| **base do conteúdo** | Tela `Gestão de Candidatos` da vaga com secção **Agentes** por card (ex.: GPT Codex, Cursor, Claude Video, Gemini Studio), mapa de aderência (94 / 92 / 65), match (40 / 19,17 / 45,83) e pocket de aderentes |
+
+#### Feature 3 — `perfil-vaga-ia`
+
+| Campo | Valor |
+|-------|--------|
+| **step / journey** | 3 · Atração · Time-to-post |
 | **title** | Criação de Perfil de Atuação e Vaga com IA |
 | **summary** | Do prompt de negócio ao perfil publicado: a IA estrutura o perfil profissional, lê sinais de mercado, sugere remuneração e contexto, adequa os textos por canal e permite criar a vaga na sequência — com confirmação clara de tudo o que foi gerado. |
 | **impact** | Briefing em linguagem natural. Perfil e vaga prontos para atrair o talento certo. |
@@ -129,11 +166,11 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | **benefits** | Redução drástica do tempo entre demanda e publicação; Padronização de qualidade; Descrições mais atrativas; Menos idas e vindas RH/gestor/comunicação; Escala sem perder marca empregadora |
 | **vídeo origem** | `recrutamento-perfil_inteligente.mov` → `perfil-vaga-ia.mp4` |
 
-#### Feature 2 — `candidatos-aderencia`
+#### Feature 4 — `candidatos-aderencia`
 
 | Campo | Valor |
 |-------|--------|
-| **step / journey** | 2 · Seleção · Quality of hire |
+| **step / journey** | 4 · Seleção · Quality of hire |
 | **title** | Gestão de Candidatos · Match e Aderência Inteligente |
 | **summary** | Acompanhamento do candidato no funil da vaga com geração de mapa de aderência por IA, ranking de aderentes, análise de mercado e leitura de trilha profissional — para montar shortlist com critério e velocidade. |
 | **impact** | Menos feeling. Mais match. Shortlist com evidência. |
@@ -143,11 +180,11 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | **benefits** | Menos tempo de triagem; Melhor qualidade do match; Menos viés na pré-seleção; Argumentação clara para o gestor; Menor falso positivo na entrevista |
 | **vídeo origem** | `recrutamento_gestao_vagas_big.mov` (corte a partir de ~72s) → `candidatos-aderencia.mp4` |
 
-#### Feature 3 — `gestao-vagas`
+#### Feature 5 — `gestao-vagas`
 
 | Campo | Valor |
 |-------|--------|
-| **step / journey** | 3 · Operação · Previsibilidade de fill |
+| **step / journey** | 5 · Operação · Previsibilidade de fill |
 | **title** | Gestão Inteligente de Vagas |
 | **summary** | Operação completa das vagas em lista e kanban: status, priorização, acompanhamento do funil por posição e ações rápidas — do rascunho ao preenchimento. |
 | **impact** | Cada vaga sob controle: status, prioridade e progresso no mesmo olhar. |
@@ -157,11 +194,11 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | **benefits** | Maior previsibilidade de fill; Priorização alinhada à capacidade; Menos vagas esquecidas; Operação mais enxuta |
 | **vídeo origem** | `recrutamento_gestao_vagas.mov` (primeiros ~62s) → `gestao-vagas.mp4` |
 
-#### Feature 4 — `gestao-perfis`
+#### Feature 6 — `gestao-perfis`
 
 | Campo | Valor |
 |-------|--------|
-| **step / journey** | 4 · Governança · Reuso |
+| **step / journey** | 6 · Governança · Reuso |
 | **title** | Gestão de Perfis de Atuação |
 | **summary** | Biblioteca viva dos perfis criados pela organização: consulta, reuso, origem das vagas e rastreabilidade do que foi gerado com apoio de IA. |
 | **impact** | Seu catálogo de perfis vira ativo estratégico de atração. |
@@ -171,11 +208,11 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | **benefits** | Menos retrabalho; Padronização entre unidades; Kick-off mais rápido; Base para auditoria de TA |
 | **vídeo origem** | `recrutamento_gestao_perfis.mov` → `gestao-perfis.mp4` |
 
-#### Feature 5 — `entrevistas`
+#### Feature 7 — `entrevistas`
 
 | Campo | Valor |
 |-------|--------|
-| **step / journey** | 5 · Avaliação · Equidade |
+| **step / journey** | 7 · Avaliação · Equidade |
 | **title** | Builder e Parametrização de Entrevistas |
 | **summary** | Estruture roteiros de entrevista alinhados ao perfil e à etapa do funil: perguntas, critérios e experiência consistente entre recrutadores. |
 | **impact** | Entrevista padronizada. Avaliação comparável. Decisão mais justa. |
@@ -185,11 +222,11 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | **benefits** | Consistência na experiência do candidato; Comparabilidade entre entrevistadores; Menos ruído no feedback; Compliance e equidade; Menos dependência de conhecimento tácito |
 | **vídeo origem** | `recrutamento_entrevistas.mov` → `entrevistas.mp4` |
 
-#### Feature 6 — `kanban-builder`
+#### Feature 8 — `kanban-builder`
 
 | Campo | Valor |
 |-------|--------|
-| **step / journey** | 6 · Processo · Adaptabilidade |
+| **step / journey** | 8 · Processo · Adaptabilidade |
 | **title** | Kanban Builder · Funil sob Medida |
 | **summary** | Monte e personalize o fluxo do kanban: colunas, regras, notificações e dados do card alinhados ao processo da empresa. |
 | **impact** | Seu processo. Seu funil. Configurado em minutos. |
@@ -199,11 +236,11 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | **benefits** | Adoção rápida; Menos customização de TI; Autonomia do RH; Escala multiunidade; Menos fricção de mudança |
 | **vídeo origem** | `recrutamento_kanban_builder.mov` → `kanban-builder.mp4` |
 
-#### Feature 7 — `painel-executivo`
+#### Feature 9 — `painel-executivo`
 
 | Campo | Valor |
 |-------|--------|
-| **step / journey** | 7 · Liderança · People Analytics |
+| **step / journey** | 9 · Liderança · People Analytics |
 | **title** | Painel Executivo de Atração e Seleção |
 | **summary** | Visão consolidada de demanda, funil, desempenho do time, qualidade e projeção — com leitura executiva assistida por IA. |
 | **impact** | Do relatório ao board: KPIs de recrutamento que a liderança entende em segundos. |
@@ -218,14 +255,17 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 | Campo | Valor |
 |-------|--------|
 | **title** | Tecnologia com Know-how de Recrutamento |
-| **summary** | IA aplicada com método: skills especializadas em mercado, detalhes de perfil, canais, aderência e insights de painel; experiência desenhada para o dia a dia de TA; governança alinhada à operação de RH. |
+| **summary** | IA aplicada com método: agentes que ampliam a capacidade das pessoas, skills especializadas em mercado, perfil, canais, aderência e insights de painel; experiência desenhada para o dia a dia de TA; governança alinhada à operação de RH. |
 | **impact** | Modernidade com resultado: processo, dado e decisão no mesmo lugar. |
-| **tags** | IA Generativa aplicada · Nexus · People Tech · Talent Acquisition · Eficiência Operacional · Experiência do Recrutador · Digitalização de RH |
-| **delivers** | IA contextualizada ao domínio; Jornada ponta a ponta; Experiência moderna (drawers, kanbans, insights); Plataforma em evolução contínua |
+| **tags** | Agentes de IA · IA Generativa aplicada · Nexus · People Tech · Talent Acquisition · Eficiência Operacional · Experiência do Recrutador · Digitalização de RH |
+| **delivers** | Agentes de IA como superpoderes do time, com governança e override do gestor; IA contextualizada ao domínio; Jornada ponta a ponta (composição → perfil → vaga → candidato → entrevista → painel); Experiência moderna (drawers, kanbans, insights); Plataforma em evolução contínua |
 | **benefits** | Posicionamento de inovação; Eficiência mensurável; Menos suporte/processos manuais; Melhor fill com menor custo de ciclo; Tecnologia que fala a língua do RH |
 
 #### Frases de totem / LED (`SHOWCASE_TOTEM_PHRASES`)
 
+- Agentes são superpoderes das pessoas.
+- A IA amplia. O humano decide.
+- 68% da pessoa + agentes = 95% do papel.
 - Match com evidência.
 - Do prompt à shortlist.
 - Funil sob medida. Decisão com dados.
@@ -237,6 +277,8 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 
 | Feature (`id`) | Benefício âncora |
 |----------------|------------------|
+| `perfil-agentes-ia` | Mais capacidade dentro do mesmo orçamento |
+| `candidatos-agentes-ia` | Capacidade real do candidato: pessoa + agentes |
 | `perfil-vaga-ia` | Redução do time-to-post |
 | `candidatos-aderencia` | Shortlist com qualidade comprovável |
 | `gestao-vagas` | Previsibilidade de preenchimento |
@@ -260,7 +302,7 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 
 | Peça | Ficheiro |
 |------|----------|
-| Página | `src/prototipo/showcase/ShowcaseConarhPage.tsx` |
+| Página | `src/prototipo/showcase/ShowcasePage.tsx` |
 | Card | `ShowcaseFeatureCard.tsx` |
 | Overlay | `ShowcaseFeatureDetail.tsx` |
 | Conteúdo | `showcaseContent.ts` |
@@ -282,7 +324,7 @@ Documentação **multi-audiência** do protótipo **Showcase ConaRH** no hub Fou
 ```text
 registry.ts (layout: fullscreen, menuGroup: showcase)
   └─ App.tsx → Route fora do MainLayout
-       └─ ShowcaseConarhPage
+       └─ ShowcasePage
             ├─ showcaseContent.ts (copy + ids)
             ├─ ShowcaseFeatureCard (hover video)
             ├─ ShowcaseFeatureDetail (overlay)
@@ -302,7 +344,7 @@ registry.ts (layout: fullscreen, menuGroup: showcase)
 | Item | Descrição |
 |------|-----------|
 | **Rota(s)** | `/showcase` |
-| **Título** | Showcase ConaRH |
+| **Título** | Showcase |
 | **Objetivo de negócio** | Demo de jornada de atração e seleção em evento |
 | **Escopo atual** | Conteúdo estático + vídeos locais; sem backend |
 | **Fora de escopo** | Auth, analytics de estande, CMS remoto (sugerido abaixo) |
@@ -368,7 +410,7 @@ Envelope de exemplo:
 - Dependências: DS do hub + assets locais.
 - Fluxo backend: N/A (estático).
 - Melhorias: deep-link `?feature=`, analytics de clique no estande, CMS.
-- Resumo: tela de demo ConaRH com 7 features + bloco de plataforma; copy editável na §4.2 e em `showcaseContent.ts`.
+- Resumo: tela de demo para evento com 9 features + bloco de plataforma; copy editável na §4.2 e em `showcaseContent.ts`.
 
 ---
 
@@ -378,7 +420,7 @@ Se o conteúdo passar a ser gerido fora do código (CMS / admin):
 
 ### Endpoint sugerido
 
-`GET /api/Showcase/ListarFeaturesConarh?evento=conarh2026`
+`GET /api/Showcase/ListarFeatures?evento=`
 
 **Resposta 200 (envelope):**
 
@@ -426,7 +468,7 @@ Se o conteúdo passar a ser gerido fora do código (CMS / admin):
 ### DTO C# sugerido
 
 ```csharp
-public sealed class ShowcaseConarhResponseDto
+public sealed class ShowcaseResponseDto
 {
     public string MensagemGuardaChuva { get; set; } = "";
     public List<string> FrasesTotem { get; set; } = new();
@@ -476,7 +518,7 @@ public sealed class ShowcaseFeatureDto
 
 | Elemento | `data-testid` |
 |----------|----------------|
-| Página | `showcase-conarh-page` |
+| Página | `showcase-page` |
 | Card feature | `showcase-feature-card-{id}` |
 | Overlay | `showcase-feature-detail` |
 | Botão fechar | `showcase-detail-close` |
@@ -484,7 +526,7 @@ public sealed class ShowcaseFeatureDto
 
 ### 8.2 Casos manuais
 
-1. Abrir `/showcase` — hero e 7 cards visíveis; sem sidebar do hub.
+1. Abrir `/showcase` — hero e 9 cards visíveis; sem sidebar do hub. Os dois primeiros cards são `perfil-agentes-ia` e `candidatos-agentes-ia`.
 2. Menu **Showcase** e card na home navegam para `/showcase`.
 3. Hover no card — vídeo inicia; sair do hover — pausa.
 4. Clique — overlay com vídeo em loop sem controles; textos da §4.2 presentes.
@@ -511,7 +553,7 @@ public sealed class ShowcaseFeatureDto
 
 **Chunks sugeridos:** §1 (visão), §2 (jornada), §4.2 (cada feature isolada), §4.3 (âncoras), Sugestões API.
 
-**Sinónimos:** showcase / ConaRH / estande / demo; mapa de aderência / match / shortlist; time-to-post / time-to-hire / fill rate; People Analytics / painel executivo.
+**Sinónimos:** showcase / estande / demo; mapa de aderência / match / shortlist; time-to-post / time-to-hire / fill rate; People Analytics / painel executivo; agentes de IA / superpoderes / composição híbrida / núcleo humano / resíduo humano-crítico / Orchestra.
 
 **Limitações:** copy no doc pode divergir do código se não sincronizar §4.2 ↔ `showcaseContent.ts`.
 
@@ -545,14 +587,15 @@ public sealed class ShowcaseFeatureDto
 - `src/prototipo/registry.ts`
 - `src/prototipo/showcase/*`
 - `public/showcase/*`
-- Conteúdo de origem: material ConaRH (features de recrutamento)
+- Conteúdo de origem: material de recrutamento (features de atração e seleção)
+- Features de agentes: jornada `Novo perfil com agentes` (app Fourmakers v2) e protótipo externo `jornada-recrutamento-hibrido`
 
 ---
 
 ## Resumo para o time
 
-Showcase ConaRH em `/showcase` (tela cheia) com 7 features + bloco de plataforma, vídeos locais e copy de negócio. **Edite o conteúdo na §4.2 e em `showcaseContent.ts`.** Sem API nesta versão; CMS opcional documentado nas sugestões.
+Showcase em `/showcase` (tela cheia) com 9 features + bloco de plataforma, vídeos locais e copy de negócio. A demo abre com as duas features de **agentes de IA** (perfil híbrido e candidatos com agentes) e segue para a jornada operacional de atração e seleção. **Edite o conteúdo na §4.2 e em `showcaseContent.ts`.** Sem API nesta versão; CMS opcional documentado nas sugestões.
 
 ---
 
-*Documento UTF-8 · `docs/SHOWCASE_CONARH_DOCUMENTACAO_TECNICA.md` · hub prototipo-fourmakers*
+*Documento UTF-8 · `docs/SHOWCASE_DOCUMENTACAO_TECNICA.md` · hub prototipo-fourmakers*

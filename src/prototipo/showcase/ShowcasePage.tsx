@@ -14,6 +14,8 @@ import { useScrollReveal } from "@/prototipo/showcase/useScrollReveal";
 import "@/prototipo/showcase/showcase.css";
 
 const JOURNEY_STEPS = [
+  "Perfil com agentes",
+  "Candidatos com agentes",
   "Perfil & vaga com IA",
   "Match e aderência",
   "Operação de vagas",
@@ -21,7 +23,7 @@ const JOURNEY_STEPS = [
   "Painel executivo",
 ];
 
-export function ShowcaseConarhPage() {
+export function ShowcasePage() {
   const containerRef = useScrollReveal<HTMLDivElement>(90);
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -90,7 +92,7 @@ export function ShowcaseConarhPage() {
             />
             <span className="hidden h-6 w-px bg-white/20 sm:block" aria-hidden />
             <span className="hidden rounded-pillToken border border-white/20 bg-white/[0.07] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/80 sm:inline-block">
-              ConaRH · Showcase
+              Showcase
             </span>
           </div>
 
@@ -301,7 +303,7 @@ export function ShowcaseConarhPage() {
       <footer className="relative z-10 border-t border-white/10 px-5 py-8 md:px-10">
         <div className="mx-auto flex w-full max-w-[1600px] flex-wrap items-center justify-between gap-4">
           <p className="text-xs text-white/50">
-            Fourmakers by Foursys · Showcase ConaRH — Jornada de Recrutamento
+            Fourmakers by Foursys · Showcase — Jornada de Recrutamento
           </p>
           <p className="text-xs text-white/40">
             Demonstração com dados fictícios · Protótipo de interface

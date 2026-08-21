@@ -7,7 +7,7 @@ import { AnalyticsMetricasCandidatosPage } from "@/prototipo/pages/AnalyticsMetr
 import { AberturaVagaSubstituicaoPage } from "@/prototipo/pages/AberturaVagaSubstituicaoPage";
 import { AnaliseAderenciaPage } from "@/prototipo/pages/AnaliseAderenciaPage";
 import { CriacaoVagaAssistentePage } from "@/prototipo/pages/CriacaoVagaAssistentePage";
-import { ShowcaseConarhPage } from "@/prototipo/showcase/ShowcaseConarhPage";
+import { ShowcasePage } from "@/prototipo/showcase/ShowcasePage";
 
 /** Grupo no menu lateral e na home */
 export type PrototipoMenuGroup = "showcase" | "prototipos" | "analytics";
@@ -56,17 +56,17 @@ export interface PrototipoRegistryEntry {
 
 export const PROTOTIPO_REGISTRY: PrototipoRegistryEntry[] = [
   {
-    id: "showcase-conarh",
+    id: "showcase",
     path: "/showcase",
     menuGroup: "showcase",
     menuLabel: "Showcase",
-    cardTitle: "Showcase ConaRH",
+    cardTitle: "Showcase",
     cardDescription:
       "Experiência em tela cheia para estande: cards animados por feature, vídeo em loop e narrativa de negócio (impacto, capabilities e benefícios esperados).",
     routeSlug: "showcase",
     layout: "fullscreen",
-    documentationMarkdownFile: "SHOWCASE_CONARH_DOCUMENTACAO_TECNICA.md",
-    Component: ShowcaseConarhPage,
+    documentationMarkdownFile: "SHOWCASE_DOCUMENTACAO_TECNICA.md",
+    Component: ShowcasePage,
   },
   {
     id: "agente-autodescoberta",

@@ -1,12 +1,14 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
+  Bot,
   BrainCircuit,
   ClipboardList,
   KanbanSquare,
   Library,
   Sparkles,
   Users,
+  Zap,
 } from "lucide-react";
 
 /** Assets servidos de `public/showcase/` — respeita `base` do Vite (GitHub Pages em subpasta). */
@@ -39,9 +41,12 @@ export interface ShowcaseFeature {
 }
 
 export const SHOWCASE_UMBRELLA =
-  "Do briefing ao fill: menos tempo de ciclo, mais aderência e decisões com dados — com IA aplicada de ponta a ponta na atração e seleção.";
+  "Do briefing ao fill: menos tempo de ciclo, mais aderência e decisões com dados — com agentes de IA que ampliam a capacidade do time e mantêm a decisão com as pessoas.";
 
 export const SHOWCASE_TOTEM_PHRASES = [
+  "Agentes são superpoderes das pessoas.",
+  "A IA amplia. O humano decide.",
+  "68% da pessoa + agentes = 95% do papel.",
   "Match com evidência.",
   "Do prompt à shortlist.",
   "Funil sob medida. Decisão com dados.",
@@ -50,6 +55,8 @@ export const SHOWCASE_TOTEM_PHRASES = [
   "People Analytics na operação — não só no relatório.",
 ];
 
+const GRADIENT_AGENTS = "linear-gradient(135deg, #9A1BFF 0%, #4CBFFF 52%, #3BFE95 100%)";
+const GRADIENT_SUPERPOWERS = "linear-gradient(135deg, #3BFE95 0%, #4CBFFF 45%, #9A1BFF 100%)";
 const GRADIENT_IA = "linear-gradient(135deg, #4CBFFF 0%, #736DFF 50%, #9A1BFF 100%)";
 const GRADIENT_MATCH = "linear-gradient(135deg, #9A1BFF 0%, #7D59FF 50%, #3BFE95 100%)";
 const GRADIENT_OPS = "linear-gradient(135deg, #736DFF 0%, #9A1BFF 60%, #6A8CCA 100%)";
@@ -61,8 +68,84 @@ const GRADIENT_BOARD = "linear-gradient(135deg, #4CBFFF 0%, #9A1BFF 45%, #3BFE95
 /** Ordem = fluxo de demonstração no estande (do “uau” imediato ao fechamento executivo). */
 export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
   {
-    id: "perfil-vaga-ia",
+    id: "perfil-agentes-ia",
     step: 1,
+    journey: "Composição · Capacidade ampliada",
+    title: "Criação de Perfil Potencializado com Agentes de IA",
+    summary:
+      "O perfil deixa de ser lista de requisitos e passa a ser composição: a IA decompõe o papel em desafios com peso, mostra o que agentes resolvem e o que exige julgamento humano, abre o custo de cada arranjo e conduz a jornada até o perfil híbrido aprovado — que evolui em ciclos.",
+    impact: "Agentes são superpoderes das pessoas. A IA amplia — o humano decide.",
+    anchorMetric: "Mais capacidade dentro do mesmo orçamento",
+    tags: [
+      "Perfil Híbrido",
+      "Humano × Agentes",
+      "Cartão de Composição",
+      "Resíduo Humano-Crítico",
+      "Orçamento de Capacidade",
+      "Governança de IA",
+      "Nexus IA",
+    ],
+    delivers: [
+      "Decomposição do papel em desafios com peso relativo e o porquê de cada split",
+      "Split humano × agentes por desafio, em duas estratégias: melhor capacidade ou adequação ao orçamento",
+      "Custo mensal aberto — pessoa e cada agente — com status de aderência ao orçamento da vaga",
+      "Override supervisionado: o gestor ajusta qualquer split e vê cobertura e custo recalcularem",
+      "Cartão de composição por profissional: núcleo humano, superpoderes e percentual do papel coberto",
+      "Roteiro de entrevista gerado a partir do resíduo humano-crítico — o que nenhum agente assume",
+      "Perfil híbrido aprovado com agentes ativos no dia 1 e alerta proativo de recomposição",
+    ],
+    benefits: [
+      "Mais capacidade entregue dentro do mesmo orçamento de headcount",
+      "Decisão de composição com custo e cobertura visíveis antes de abrir a vaga",
+      "Ampliação do pool de talentos — perfis mais júniores viabilizados por superpoderes de IA",
+      "Escopo explícito do que a IA amplia e do que continua exigindo julgamento humano",
+      "Rastreabilidade de cada agente concedido, com revogação pelo gestor a qualquer momento",
+      "Mobilidade interna acionada antes da busca externa — de 68% para 85% de cobertura do papel",
+    ],
+    icon: Bot,
+    gradient: GRADIENT_AGENTS,
+  },
+  {
+    id: "candidatos-agentes-ia",
+    step: 2,
+    journey: "Talento · Capacidade com agentes",
+    title: "Acompanhamento de Candidatos com Agentes de IA",
+    summary:
+      "O funil da vaga mostra, em cada card, os agentes de IA que a pessoa já opera — ao lado do mapa de aderência e do match. O dossiê completo abre em drawer, com completude de perfil, trilha profissional e acesso a dados sensíveis governado por permissão.",
+    impact: "Não é só quem a pessoa é. É o que ela entrega com os agentes que domina.",
+    anchorMetric: "Capacidade real do candidato: pessoa + agentes",
+    tags: [
+      "Agentes do Candidato",
+      "Mapa de Aderência",
+      "Kanban de Candidatos",
+      "Dossiê do Candidato",
+      "Completude de Perfil",
+      "Governança de Dados",
+      "Nexus IA",
+    ],
+    delivers: [
+      "Funil da vaga em kanban e lista, com etapas configuráveis e movimentação por arraste",
+      "Agentes de IA declarados por candidato no próprio card, com contagem e expansão",
+      "Mapa de aderência e percentual de match visíveis em cada etapa do funil",
+      "Origem da candidatura, tempo decorrido e histórico de movimentação",
+      "Dossiê em drawer: perfil, experiências, certificações, educação e habilidades",
+      "Indicador de completude do perfil, com dados críticos e reconhecimentos",
+      "Acesso a remuneração e dados sensíveis controlado por permissão",
+    ],
+    benefits: [
+      "Leitura de capacidade ampliada: a pessoa e os agentes que ela domina",
+      "Triagem mais rápida, com aderência e match no próprio card do funil",
+      "Menos abas e planilhas — dossiê completo sem sair do kanban",
+      "Decisão com evidência e governança sobre dados sensíveis",
+      "Priorização clara de quem avança em cada etapa",
+      "Conversa de contratação já alinhada ao desenho híbrido do perfil",
+    ],
+    icon: Zap,
+    gradient: GRADIENT_SUPERPOWERS,
+  },
+  {
+    id: "perfil-vaga-ia",
+    step: 3,
     journey: "Atração · Time-to-post",
     title: "Criação de Perfil de Atuação e Vaga com IA",
     summary:
@@ -99,7 +182,7 @@ export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
   },
   {
     id: "candidatos-aderencia",
-    step: 2,
+    step: 4,
     journey: "Seleção · Quality of hire",
     title: "Gestão de Candidatos · Match e Aderência Inteligente",
     summary:
@@ -136,7 +219,7 @@ export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
   },
   {
     id: "gestao-vagas",
-    step: 3,
+    step: 5,
     journey: "Operação · Previsibilidade de fill",
     title: "Gestão Inteligente de Vagas",
     summary:
@@ -169,7 +252,7 @@ export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
   },
   {
     id: "gestao-perfis",
-    step: 4,
+    step: 6,
     journey: "Governança · Reuso",
     title: "Gestão de Perfis de Atuação",
     summary:
@@ -201,7 +284,7 @@ export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
   },
   {
     id: "entrevistas",
-    step: 5,
+    step: 7,
     journey: "Avaliação · Equidade",
     title: "Builder e Parametrização de Entrevistas",
     summary:
@@ -234,7 +317,7 @@ export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
   },
   {
     id: "kanban-builder",
-    step: 6,
+    step: 8,
     journey: "Processo · Adaptabilidade",
     title: "Kanban Builder · Funil sob Medida",
     summary:
@@ -267,7 +350,7 @@ export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
   },
   {
     id: "painel-executivo",
-    step: 7,
+    step: 9,
     journey: "Liderança · People Analytics",
     title: "Painel Executivo de Atração e Seleção",
     summary:
@@ -308,9 +391,10 @@ export const SHOWCASE_FEATURES: ShowcaseFeature[] = [
 export const SHOWCASE_PLATFORM = {
   title: "Tecnologia com Know-how de Recrutamento",
   summary:
-    "IA aplicada com método: skills especializadas em mercado, detalhes de perfil, canais, aderência e insights de painel; experiência de produto desenhada para o dia a dia de Talent Acquisition; e governança alinhada à operação de RH.",
+    "IA aplicada com método: agentes que ampliam a capacidade das pessoas, skills especializadas em mercado, perfil, canais, aderência e insights de painel; experiência de produto desenhada para o dia a dia de Talent Acquisition; e governança alinhada à operação de RH.",
   impact: "Modernidade com resultado: processo, dado e decisão no mesmo lugar.",
   tags: [
+    "Agentes de IA",
     "IA Generativa aplicada",
     "Nexus",
     "People Tech",
@@ -320,8 +404,9 @@ export const SHOWCASE_PLATFORM = {
     "Digitalização de RH",
   ],
   delivers: [
+    "Agentes de IA como superpoderes do time, com governança e override do gestor",
     "IA contextualizada ao domínio de atração e seleção — não genérica",
-    "Jornada ponta a ponta: perfil → vaga → candidato → entrevista → painel",
+    "Jornada ponta a ponta: composição → perfil → vaga → candidato → entrevista → painel",
     "Experiência moderna: drawers, kanbans, personalização e insights",
     "Plataforma em evolução contínua, com roadmap orientado ao cliente",
   ],

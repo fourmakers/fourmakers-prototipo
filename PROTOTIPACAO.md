@@ -31,7 +31,7 @@ Por defeito as telas usam **Header**, **Sidebar** e **área de conteúdo** do `M
 |--------|--------|
 | **Registro de protótipos (rotas + menu + cards + doc .md para download)** | `src/prototipo/registry.ts` (`documentationMarkdownFile` opcional) |
 | **Páginas do módulo** | `src/prototipo/pages/` |
-| Showcase ConaRH (tela cheia `/showcase`) | `src/prototipo/showcase/` · vídeos e posters em `public/showcase/` |
+| Showcase (tela cheia `/showcase`) | `src/prototipo/showcase/` · vídeos e posters em `public/showcase/` |
 | Página inicial (hub) | `src/prototipo/pages/PrototipoHomePage.tsx` |
 | Página 404 | `src/pages/NotFound.tsx` |
 | Componentes de UI (DS) | `src/components/ui/` |
